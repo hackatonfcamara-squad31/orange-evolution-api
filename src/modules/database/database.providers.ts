@@ -16,7 +16,7 @@ export const databaseProviders = [
             ? process.env.DB_TEST_DATABASE
             : process.env.DB_DATABASE,
         logging: ['error', 'log'],
-        entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+        entities: [__dirname + '/../**/entities/*.entity{.ts,.js}'],
         synchronize: true,
         ssl:
           process.env.NODE_ENV === 'dev'
