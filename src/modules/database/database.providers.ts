@@ -18,12 +18,7 @@ export const databaseProviders = [
         logging: ['error', 'log'],
         entities: [__dirname + '/../**/entities/*.entity{.ts,.js}'],
         synchronize: true,
-        ssl:
-          process.env.NODE_ENV === 'dev'
-            ? null
-            : {
-                rejectUnauthorized: false,
-              },
+        ssl: false,
       });
 
       return dataSource.initialize();

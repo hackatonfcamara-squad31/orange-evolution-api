@@ -22,7 +22,7 @@ export class AuthService {
     };
 
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: this.jwtService.sign(payload, { secret: process.env.JWT_SECRET }),
     };
   }
 
@@ -40,8 +40,6 @@ export class AuthService {
       }
     }
 
-    throw new UnauthorizedError(
-      'Email address or password are incorrect.',
-    );
+    throw new UnauthorizedError('Email address or password are incorrect.');
   }
 }

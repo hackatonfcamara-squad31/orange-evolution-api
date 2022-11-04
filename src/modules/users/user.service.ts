@@ -9,7 +9,7 @@ export class UsersService {
   constructor(
     @Inject('USER_REPOSITORY')
     private usersRepository: Repository<User>,
-  ) { }
+  ) {}
 
   async create({
     name,
@@ -45,8 +45,7 @@ export class UsersService {
         .addSelect('user.password')
         .where('user.email = :email', { email: email })
         .getOne();
-    } else
-      user = await this.usersRepository.findOne({ where: { email } });
+    } else user = await this.usersRepository.findOne({ where: { email } });
 
     if (!user) throw new BadRequestException('Email does not exist.');
 
