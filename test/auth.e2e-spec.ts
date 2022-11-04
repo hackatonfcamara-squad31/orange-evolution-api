@@ -13,7 +13,7 @@ describe('AuthController (e2e)', () => {
 
   const defaultUser = {
     name: "Peter Parker",
-    email: "peter@email.com",
+    email: "peter2@email.com",
     password: "testpassword123",
     is_admin: true,
   }
