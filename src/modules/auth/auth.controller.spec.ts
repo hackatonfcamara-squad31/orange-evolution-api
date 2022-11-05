@@ -10,7 +10,7 @@ import { UserPayload } from './dtos/UserPayload';
 
 describe('AuthController', () => {
   let controller: AuthController;
-  const jwtService = new JwtService;
+  const jwtService = new JwtService();
 
   const mockUser: User = {
     id: randomUUID(),
@@ -31,7 +31,9 @@ describe('AuthController', () => {
       };
 
       return {
-        access_token: jwtService.sign(payload, { secret: process.env.JWT_SECRET }),
+        access_token: jwtService.sign(payload, {
+          secret: process.env.JWT_SECRET,
+        }),
       };
     }),
   };
