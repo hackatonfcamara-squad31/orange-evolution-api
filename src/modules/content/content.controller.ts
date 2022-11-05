@@ -16,9 +16,9 @@ export class ContentController {
   }
 
   @IsPublic()
-  @Get(':id')
-  async getContentById(@Param('id') id: string): Promise<Content> {
-    return this.contentService.findById(+id);
+  @Get(':uuid')
+  async getContentByuuid(@Param('uuid') uuid: string): Promise<Content> {
+    return this.contentService.findByUuid(uuid);
   }
 
   @IsPublic()
@@ -30,11 +30,11 @@ export class ContentController {
   }
 
   @IsPublic()
-  @Patch(':id')
+  @Patch(':uuid')
   async update(
-    @Param('id') id: string,
+    @Param('uuid') uuid: string,
     @Body() updateContent: UpdateContentDTO,
   ): Promise<Content> {
-    return this.contentService.update(+id, updateContent);
+    return this.contentService.update(uuid, updateContent);
   }
 }

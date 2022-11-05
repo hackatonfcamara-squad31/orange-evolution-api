@@ -7,30 +7,30 @@ import {
 
 @Entity()
 export class Content {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  uuid: string;
 
   @Column()
   module_id: number;
 
-  @Column()
+  @Column({ length: 255 })
   title: string;
 
-  @Column()
+  @Column({ length: 100 })
   type: string;
 
-  @Column()
+  @Column({ length: 255 })
   creator_name: string;
 
   @Column()
   duration: number;
 
-  @Column()
+  @Column({ length: 1000 })
   link: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp' })
   updated_at: Date;
 }
