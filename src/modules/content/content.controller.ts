@@ -16,13 +16,25 @@ export class ContentController {
   }
 
   @IsPublic()
+  @Get(':id')
+  async getContentById(@Param('id') id: string): Promise<Content> {
+    return this.contentService.findById(+id);
+  }
+
+  @IsPublic()
   @Post()
-  createContent(@Body() createContentDTO: CreateContentDTO): Promise<Content> {
+  async createContent(
+    @Body() createContentDTO: CreateContentDTO,
+  ): Promise<Content> {
     return this.contentService.create(createContentDTO);
   }
 
+  @IsPublic()
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updateContent: UpdateContentDTO) {
-    return 'updateContent';
+  async update(
+    @Param('id') id: string,
+    @Body() updateContent: UpdateContentDTO,
+  ): Promise<Content> {
+    return this.contentService.update(+id, updateContent);
   }
 }
