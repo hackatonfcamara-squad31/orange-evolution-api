@@ -39,9 +39,11 @@ export class ContentService {
     id: number,
     updateContentDTO: UpdateContentDTO,
   ): Promise<Content> {
+    const date: Date = new Date(Date.now());
     const content = await this.contentRepository.preload({
       id,
       ...updateContentDTO,
+      updated_at: date,
     });
 
     if (!content) {
