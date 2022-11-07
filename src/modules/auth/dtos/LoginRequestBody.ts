@@ -1,9 +1,9 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty } from 'class-validator';
 
 export class LoginRequestBody {
-  @IsEmail({}, { message: 'Please inform a valid email.' })
+  @IsEmail({}, { message: 'Por favor, informe um email válido.' })
   email: string;
 
-  @IsNotEmpty({ message: 'Please inform your password.' })
+  @IsNotEmpty({ message: 'Por favor, informe sua senha.' })
   password: string;
 }
