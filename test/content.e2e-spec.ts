@@ -1,49 +1,51 @@
 import { INestApplication } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { User } from 'src/modules/users/entities/user.entity';
-import { UserModule } from '../src/modules/users/user.module';
-import * as request from 'supertest';
+import { ContentModule } from 'src/modules/content/content.module';
+import { Content } from 'src/modules/content/entities/content.entity';
 import { Repository } from 'typeorm';
+import * as request from 'supertest';
+import { CreateContentDTO } from 'src/modules/content/dto/create-content.dto';
 
-describe('UserController (e2e)', () => {
+describe('ContentController (e2e)', () => {
   let app: INestApplication;
-  let repository: Repository<User>;
+  let repository: Repository<Content>;
 
-  const defaultUser = {
-    name: 'Peter Parker',
-    email: 'peter@email.com',
-    password: 'testpassword123',
-    is_admin: true,
+  const content: CreateContentDTO = {
+    module_id: 5,
+    creator_name: 'naruto',
+    title: 'Learn Nest.js',
+    link: 'www.youtube.com',
+    type: 'video',
+    duration: 86400,
   };
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [ConfigModule.forRoot(), UserModule],
+      imports: [ConfigModule.forRoot(), ContentModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    repository = app.get<Repository<User>>('USER_REPOSITORY');
+    repository = app.get<Repository<Content>>('CONTENT_REPOSITORY');
     repository.clear();
     await app.init();
   });
 
   afterAll(async () => {
-    repository = app.get<Repository<User>>('USER_REPOSITORY');
+    repository = app.get<Repository<Content>>('CONTENT_REPOSITORY');
     repository.clear();
   });
 
-  it('/api/users (POST)', async () => {
+  it('/api/content (POST)', async () => {
     return request(app.getHttpServer())
-      .post('/users')
-      .send(defaultUser)
+      .post('/content')
+      .send(content)
       .expect(201)
       .then((response) => {
         expect(response.body).toEqual(
           expect.objectContaining({
             id: expect.any(String),
-            ...defaultUser,
-            password: expect.any(String),
+            ...content,
             created_at: expect.any(String),
             updated_at: expect.any(String),
           }),

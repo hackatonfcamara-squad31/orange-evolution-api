@@ -6,9 +6,10 @@ import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { UserModule } from './modules/users/user.module';
+import { ContentModule } from './modules/content/content.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), UserModule, AuthModule],
+  imports: [ConfigModule.forRoot(), UserModule, AuthModule, ContentModule],
   controllers: [AppController],
   providers: [
     AppService,
