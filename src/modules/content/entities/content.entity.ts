@@ -8,7 +8,7 @@ import {
 @Entity()
 export class Content {
   @PrimaryGeneratedColumn('uuid')
-  uuid: string;
+  id: string;
 
   @Column()
   module_id: number;

@@ -11,13 +11,13 @@ export class ContentService {
     private contentRepository: Repository<Content>,
   ) {}
 
-  async findByUuid(uuid: string): Promise<Content> {
+  async findById(id: string): Promise<Content> {
     const content = await this.contentRepository.findOne({
-      where: { uuid },
+      where: { id },
     });
 
     if (!content) {
-      throw new NotFoundException();
+      throw new NotFoundException(`ID ${id} não encontrado`);
     }
 
     return content;
@@ -36,18 +36,18 @@ export class ContentService {
   }
 
   async update(
-    uuid: string,
+    id: string,
     updateContentDTO: UpdateContentDTO,
   ): Promise<Content> {
     const date: Date = new Date(Date.now());
     const content = await this.contentRepository.preload({
-      uuid,
+      id,
       ...updateContentDTO,
       updated_at: date,
     });
 
     if (!content) {
-      throw new NotFoundException(`Content uuid ${uuid} not found.`);
+      throw new NotFoundException(`ID ${id} não encontrado`);
     }
 
     return this.contentRepository.save(content);
