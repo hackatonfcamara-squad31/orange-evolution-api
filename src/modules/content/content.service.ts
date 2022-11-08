@@ -1,5 +1,11 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
+import { validate } from 'uuid';
 import { CreateContentDTO } from './dto/create-content.dto';
 import { UpdateContentDTO } from './dto/update-content.dto';
 import { Content } from './entities/content.entity';
@@ -12,12 +18,16 @@ export class ContentService {
   ) {}
 
   async findById(id: string): Promise<Content> {
+    if (!validate(id)) {
+      throw new BadRequestException('Informe um ID válido.');
+    }
+
     const content = await this.contentRepository.findOne({
       where: { id },
     });
 
     if (!content) {
-      throw new NotFoundException(`ID ${id} não encontrado`);
+      throw new NotFoundException(`Conteúdo com ID ${id} não encontrado`);
     }
 
     return content;
@@ -47,7 +57,7 @@ export class ContentService {
     });
 
     if (!content) {
-      throw new NotFoundException(`ID ${id} não encontrado`);
+      throw new NotFoundException(`Conteúdo com ID ${id} não encontrado`);
     }
 
     return this.contentRepository.save(content);

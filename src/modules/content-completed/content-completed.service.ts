@@ -1,11 +1,7 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { Content } from '../content/entities/content.entity';
+import { ContentService } from '../content/content.service';
+import { UsersService } from '../users/user.service';
 import { CreateCompletedStatusDTO } from './dtos/create-completed-status.dto';
 import { Completed } from './entities/completed.entity';
 
@@ -13,9 +9,9 @@ import { Completed } from './entities/completed.entity';
 export class ContentCompletedService {
   constructor(
     @Inject('COMPLETED_REPOSITORY')
-    private readonly completedRepository: Repository<Completed>,
-    @Inject('CONTENT_REPOSITORY')
-    private readonly contentRepository: Repository<Content>,
+    private completedRepository: Repository<Completed>,
+    private readonly contentService: ContentService,
+    private readonly userService: UsersService,
   ) {}
 
   async create(
@@ -30,15 +26,12 @@ export class ContentCompletedService {
       throw new BadRequestException('Status de conteúdo já foi registrado');
     }
 
-    const content = await this.contentRepository.findOne({
-      where: { id: content_id },
-    });
+    const content = await this.contentService.findById(content_id);
+    const user = await this.userService.findUserById(
+      createCompletedDto.user_id,
+    );
 
-    if (!content) {
-      throw new NotFoundException('não existe registro do conteúdo solicitado');
-    }
-
-    const completed = { ...createCompletedDto, content };
+    const completed = { ...createCompletedDto, content, user };
 
     return this.completedRepository.save(completed);
   }

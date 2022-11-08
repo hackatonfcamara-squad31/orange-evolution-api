@@ -1,9 +1,11 @@
 import { Content } from 'src/modules/content/entities/content.entity';
+import { User } from 'src/modules/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -13,8 +15,9 @@ export class Completed {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  user_id: string;
+  @ManyToOne(() => User, (user) => user.completed)
+  @JoinColumn()
+  user: User;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   created_at: Date;
