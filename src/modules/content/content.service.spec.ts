@@ -11,7 +11,7 @@ describe('ContentService', () => {
   const mockContent: Content[] = [
     {
       id: randomUUID(),
-      module_id: 5,
+      moduleId: 5,
       creator_name: 'naruto',
       title: 'Learn Nest.js',
       link: 'www.youtube.com',
@@ -22,7 +22,7 @@ describe('ContentService', () => {
     },
     {
       id: randomUUID(),
-      module_id: 4,
+      moduleId: 4,
       creator_name: 'sasuke',
       title: 'Learn Next.js',
       link: 'www.medium.com',

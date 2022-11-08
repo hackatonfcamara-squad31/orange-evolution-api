@@ -1,25 +1,25 @@
 import { IsNotEmpty, IsNumber } from 'class-validator';
 
 export class CreateContentDTO {
-  @IsNotEmpty({ message: "Please inform modedule's ID" })
+  @IsNotEmpty({ message: 'Por favor, informe o ID do módulo' })
   module_id: number;
 
-  @IsNotEmpty({ message: "Please inform content's title" })
+  @IsNotEmpty({ message: 'Por favor, informe o  título do conteúdo' })
   title: string;
 
-  @IsNotEmpty({ message: "Please inform content's type" })
+  @IsNotEmpty({ message: 'Por favor, informe o  tipo do conteúdo' })
   type: string;
 
   @IsNotEmpty()
   creator_name: string;
 
-  @IsNotEmpty({ message: "Please inform content's duration" })
+  @IsNotEmpty({ message: 'Por favor, informe a duração do conteúdo' })
   @IsNumber(
     {},
-    { message: "Please inform a correctly content's duration in seconds" },
+    { message: 'Por favor, informe a duração do conteúdo em segundos' },
   )
   duration: number;
 
-  @IsNotEmpty({ message: "Please inform content's link" })
+  @IsNotEmpty({ message: 'Por favor, informe o link do conteúdo' })
   link: string;
 }
