@@ -9,7 +9,7 @@ import { UserPayload } from './dtos/UserPayload';
 
 describe('AuthService', () => {
   let service: AuthService;
-  const jwtService = new JwtService;
+  const jwtService = new JwtService();
 
   const mockUser: User = {
     id: randomUUID(),
@@ -28,14 +28,16 @@ describe('AuthService', () => {
   };
 
   const mockAuthService = {
-    validateUser: jest.fn().mockImplementation((email: string, password: string) => {
-      if (password === mockUser.password) {
-        return {
-          ...mockUser,
-          password: undefined
-        };
-      }
-    }),
+    validateUser: jest
+      .fn()
+      .mockImplementation((email: string, password: string) => {
+        if (password === mockUser.password) {
+          return {
+            ...mockUser,
+            password: undefined,
+          };
+        }
+      }),
     login: jest.fn().mockImplementation((user: User) => {
       const payload: UserPayload = {
         sub: user.id,
@@ -44,15 +46,18 @@ describe('AuthService', () => {
       };
 
       return {
-        access_token: jwtService.sign(payload, { secret: process.env.JWT_SECRET }),
+        access_token: jwtService.sign(payload, {
+          secret: process.env.JWT_SECRET,
+        }),
       };
-    })
+    }),
   };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [AuthService, JwtService, UsersService],
-    }).overrideProvider(UsersService)
+    })
+      .overrideProvider(UsersService)
       .useValue(mockUsersService)
       .overrideProvider(AuthService)
       .useValue(mockAuthService)
