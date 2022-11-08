@@ -1,4 +1,4 @@
-import { NotAcceptableException, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { randomUUID } from 'crypto';
 import { ContentService } from './content.service';

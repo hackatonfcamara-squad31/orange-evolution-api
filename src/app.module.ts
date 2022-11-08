@@ -7,9 +7,16 @@ import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { UserModule } from './modules/users/user.module';
 import { ContentModule } from './modules/content/content.module';
+import { ContentCompletedModule } from './modules/content-completed/content-completed.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), UserModule, AuthModule, ContentModule],
+  imports: [
+    ConfigModule.forRoot(),
+    UserModule,
+    AuthModule,
+    ContentModule,
+    ContentCompletedModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,

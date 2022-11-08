@@ -34,9 +34,7 @@ describe('ContentController', () => {
       .mockImplementation((id: string, updatedContent: UpdateContentDTO) => {
         return { ...updatedContent, id };
       }),
-    findById: jest.fn().mockImplementation((id: string) => {
-      return mockContent[0];
-    }),
+    findById: jest.fn().mockReturnValue(mockContent[0]),
     findAll: jest.fn().mockImplementation(() => {
       return mockContent;
     }),
