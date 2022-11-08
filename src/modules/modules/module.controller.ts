@@ -11,6 +11,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { IsPublic } from '../auth/decorators/is-public.decorator';
 import { CreateModuleRequestDTO } from './dtos/create-module-request.dto';
 import { FindModulesQuery } from './dtos/find-modules-query.dto';
 import { ListModuleResponse } from './dtos/list-modules-response.dto';
@@ -21,7 +22,7 @@ import { ModulesService } from './module.service';
 
 @Controller('modules')
 export class ModulesController {
-  constructor(private modulesService: ModulesService) {}
+  constructor(private modulesService: ModulesService) { }
 
   @Post()
   @UseInterceptors(FileInterceptor('icon'))
@@ -62,11 +63,13 @@ export class ModulesController {
     return this.modulesService.update({ ...moduleData, id });
   }
 
+  @IsPublic()
   @Get(':id')
   async find(@Param('id') id: string): Promise<Module> {
     return this.modulesService.findById(id);
   }
 
+  @IsPublic()
   @Get()
   async findAll(@Query() query: FindModulesQuery): Promise<ListModuleResponse> {
     return this.modulesService.find({ count: query.count, page: query.page });
