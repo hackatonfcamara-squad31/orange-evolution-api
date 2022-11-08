@@ -1,15 +1,15 @@
 import { IsBoolean, IsEmail, IsNotEmpty } from 'class-validator';
 
 export class CreateUserDTO {
-  @IsNotEmpty({ message: 'Please inform your name.' })
+  @IsNotEmpty({ message: 'Por favor, informe seu nome.' })
   name: string;
 
-  @IsEmail({}, { message: 'Please inform a valid email.' })
+  @IsEmail({}, { message: 'Por favor, informe um email válido.' })
   email: string;
 
-  @IsNotEmpty({ message: 'Please inform your password.' })
+  @IsNotEmpty({ message: 'Por favor, informe sua senha.' })
   password: string;
 
-  @IsBoolean({ message: 'Please inform your account type.' })
+  @IsBoolean({ message: 'Por favor, informe o tipo da conta.' })
   is_admin: boolean;
 }

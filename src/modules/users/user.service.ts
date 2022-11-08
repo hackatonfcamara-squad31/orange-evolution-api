@@ -19,7 +19,7 @@ export class UsersService {
   }: CreateUserDTO): Promise<User> {
     const userExists = await this.usersRepository.findOne({ where: { email } });
 
-    if (userExists) throw new BadRequestException('Email already in use.');
+    if (userExists) throw new BadRequestException('Email já cadastrado.');
 
     const passwordHash = await hash(password, 8);
 
@@ -49,7 +49,7 @@ export class UsersService {
         .getOne();
     } else user = await this.usersRepository.findOne({ where: { email } });
 
-    if (!user) throw new BadRequestException('Email does not exist.');
+    if (!user) throw new BadRequestException('Email não encontrado.');
 
     return user;
   }
