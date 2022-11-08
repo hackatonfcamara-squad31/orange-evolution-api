@@ -36,7 +36,7 @@ export class UsersService {
       is_admin,
     });
 
-    user.password = '';
+    // user.password = '';
 
     return await this.usersRepository.save(user);
   }
