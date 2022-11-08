@@ -1,7 +1,10 @@
+import { Content } from 'src/modules/content/entities/content.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -13,9 +16,10 @@ export class Completed {
   @Column()
   user_id: string;
 
-  @Column()
-  content_id: string;
-
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
-  createdAt: Date;
+  created_at: Date;
+
+  @OneToOne(() => Content, (content) => content.completed)
+  @JoinColumn({ name: 'content_id' })
+  content: Content;
 }
