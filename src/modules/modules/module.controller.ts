@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateModuleRequestDTO } from './dtos/create-module-request.dto';
 import { FindModulesQuery } from './dtos/find-modules-query.dto';
@@ -10,15 +21,17 @@ import { ModulesService } from './module.service';
 
 @Controller('modules')
 export class ModulesController {
-  constructor(private modulesService: ModulesService) { }
+  constructor(private modulesService: ModulesService) {}
 
   @Post()
   @UseInterceptors(FileInterceptor('icon'))
-  async create(@Body() moduleData: CreateModuleRequestDTO, @UploadedFile() icon?: Express.Multer.File): Promise<Module> {
-    let iconFilename = ''
+  async create(
+    @Body() moduleData: CreateModuleRequestDTO,
+    @UploadedFile() icon?: Express.Multer.File,
+  ): Promise<Module> {
+    let iconFilename = '';
 
-    if (icon)
-      iconFilename = icon.filename;
+    if (icon) iconFilename = icon.filename;
 
     return this.modulesService.create({ ...moduleData, icon: iconFilename });
   }
@@ -30,17 +43,22 @@ export class ModulesController {
 
   @Put('icon/:id')
   @UseInterceptors(FileInterceptor('icon'))
-  async updateIcon(@Param('id') id: string, @UploadedFile() icon: Express.Multer.File): Promise<Module> {
-    let iconFilename = ''
+  async updateIcon(
+    @Param('id') id: string,
+    @UploadedFile() icon: Express.Multer.File,
+  ): Promise<Module> {
+    let iconFilename = '';
 
-    if (icon)
-      iconFilename = icon.filename;
+    if (icon) iconFilename = icon.filename;
 
     return this.modulesService.updateIcon(id, iconFilename);
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() moduleData: UpdateModuleRequestDTO): Promise<Module> {
+  async update(
+    @Param('id') id: string,
+    @Body() moduleData: UpdateModuleRequestDTO,
+  ): Promise<Module> {
     return this.modulesService.update({ ...moduleData, id });
   }
 

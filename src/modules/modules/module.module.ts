@@ -11,4 +11,4 @@ import { ModulesService } from './module.service';
   controllers: [ModulesController],
   exports: [ModulesService],
 })
-export class ModulesModule { }
+export class ModulesModule {}

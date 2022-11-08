@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { statSync, unlinkSync } from 'fs';
 import { resolve } from 'path';
-import upload from 'src/config/upload';
+import upload from '../../config/upload';
 
 @Injectable()
 export class DiskStorageProvider {
   public async saveFile(file: string): Promise<string> {
-    return (`${process.env.API_URL}/media/${file}`);
+    return `${process.env.API_URL}/media/${file}`;
   }
   public async deleteFile(file: string): Promise<void> {
     const fileName = file.split('/');

@@ -3,12 +3,12 @@ import * as cloudinary from 'cloudinary';
 import { unlinkSync } from 'fs';
 import { getType } from 'mime';
 import { resolve } from 'path';
-import upload from 'src/config/upload';
+import upload from '../../config/upload';
 
 @Injectable()
 export class CloudinaryStorageProvider {
   constructor() {
-    cloudinary.v2.config(upload.storage.cloudinary)
+    cloudinary.v2.config(upload.storage.cloudinary);
   }
 
   public async saveFile(file: string): Promise<string> {
@@ -21,22 +21,26 @@ export class CloudinaryStorageProvider {
     }
 
     const uploadImage = new Promise<string>((resolve, reject) => {
-      cloudinary.v2.uploader.upload(originalPath, {
-        use_filename: true,
-        unique_filename: false
-      }, async (error, result) => {
-        unlinkSync(originalPath);
-        if (error) return reject(error)
+      cloudinary.v2.uploader.upload(
+        originalPath,
+        {
+          use_filename: true,
+          unique_filename: false,
+        },
+        async (error, result) => {
+          unlinkSync(originalPath);
+          if (error) return reject(error);
 
-        let uploadUrl = '';
+          let uploadUrl = '';
 
-        if (result?.secure_url) {
-          uploadUrl = result?.secure_url;
-        }
+          if (result?.secure_url) {
+            uploadUrl = result?.secure_url;
+          }
 
-        return resolve(uploadUrl)
-      });
-    })
+          return resolve(uploadUrl);
+        },
+      );
+    });
 
     return await uploadImage;
   }
@@ -46,14 +50,18 @@ export class CloudinaryStorageProvider {
       const filePath = file.split('/');
       const filePublicId = filePath[filePath.length - 1].split('.')[0];
 
-      cloudinary.v2.uploader.destroy(filePublicId, {
-        resource_type: 'image',
-        invalidate: true,
-      }, (error, result) => {
-        if (error) return reject(error);
+      cloudinary.v2.uploader.destroy(
+        filePublicId,
+        {
+          resource_type: 'image',
+          invalidate: true,
+        },
+        (error, result) => {
+          if (error) return reject(error);
 
-        return resolve(result);
-      });
+          return resolve(result);
+        },
+      );
     });
 
     await deleteImage;

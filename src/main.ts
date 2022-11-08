@@ -25,10 +25,7 @@ async function bootstrap() {
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 
-  app.use(
-    '/media',
-    express.static(resolve(__dirname, '..', 'uploads'))
-  );
+  app.use('/media', express.static(resolve(__dirname, '..', 'uploads')));
 
   app.setGlobalPrefix('api');
 

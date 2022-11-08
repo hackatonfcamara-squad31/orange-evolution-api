@@ -19,7 +19,7 @@ import { UserModule } from './modules/users/user.module';
     AuthModule,
     ModulesModule,
     MulterModule.register(upload.multerConfig),
-    StorageModule
+    StorageModule,
   ],
   controllers: [AppController],
   providers: [
@@ -29,6 +29,6 @@ import { UserModule } from './modules/users/user.module';
       useClass: JwtAuthGuard,
     },
   ],
-  exports: [MulterModule]
+  exports: [MulterModule],
 })
-export class AppModule { }
+export class AppModule {}

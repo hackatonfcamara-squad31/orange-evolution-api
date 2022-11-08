@@ -11,18 +11,15 @@ describe('UserController (e2e)', () => {
   let repository: Repository<User>;
 
   const defaultUser = {
-    name: "Peter Parker",
-    email: "peter@email.com",
-    password: "testpassword123",
+    name: 'Peter Parker',
+    email: 'peter@email.com',
+    password: 'testpassword123',
     is_admin: true,
-  }
+  };
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [
-        ConfigModule.forRoot(),
-        UserModule
-      ],
+      imports: [ConfigModule.forRoot(), UserModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
@@ -34,21 +31,23 @@ describe('UserController (e2e)', () => {
   afterAll(async () => {
     repository = app.get<Repository<User>>('USER_REPOSITORY');
     repository.clear();
-  })
+  });
 
   it('/api/users (POST)', async () => {
     return request(app.getHttpServer())
       .post('/users')
       .send(defaultUser)
       .expect(201)
-      .then(response => {
-        expect(response.body).toEqual(expect.objectContaining({
-          id: expect.any(String),
-          ...defaultUser,
-          password: expect.any(String),
-          created_at: expect.any(String),
-          updated_at: expect.any(String),
-        }))
-      })
+      .then((response) => {
+        expect(response.body).toEqual(
+          expect.objectContaining({
+            id: expect.any(String),
+            ...defaultUser,
+            password: expect.any(String),
+            created_at: expect.any(String),
+            updated_at: expect.any(String),
+          }),
+        );
+      });
   });
 });
