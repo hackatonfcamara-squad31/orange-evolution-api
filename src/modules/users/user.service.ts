@@ -9,7 +9,7 @@ export class UsersService {
   constructor(
     @Inject('USER_REPOSITORY')
     private usersRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async create({
     name,
@@ -29,6 +29,8 @@ export class UsersService {
       password: passwordHash,
       is_admin,
     });
+
+    user.password = '';
 
     return await this.usersRepository.save(user);
   }
