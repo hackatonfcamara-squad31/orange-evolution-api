@@ -11,7 +11,7 @@ describe('ContentController', () => {
   const mockContent: Content[] = [
     {
       id: randomUUID(),
-      moduleId: 5,
+      module_id: 5,
       creator_name: 'naruto',
       title: 'Learn Nest.js',
       link: 'www.youtube.com',
