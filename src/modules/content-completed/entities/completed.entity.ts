@@ -1,7 +1,6 @@
 import { Content } from 'src/modules/content/entities/content.entity';
 import { User } from 'src/modules/users/entities/user.entity';
 import {
-  Column,
   CreateDateColumn,
   Entity,
   JoinColumn,

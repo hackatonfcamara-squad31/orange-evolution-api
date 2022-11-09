@@ -1,5 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { randomUUID } from 'crypto';
+import { ContentCompletedService } from '../content-completed/content-completed.service';
+import { Completed } from '../content-completed/entities/completed.entity';
+import { User } from '../users/entities/user.entity';
 import { ContentController } from './content.controller';
 import { ContentService } from './content.service';
 import { CreateContentDTO } from './dto/create-content.dto';
@@ -11,7 +14,7 @@ describe('ContentController', () => {
   const mockContent: Content[] = [
     {
       id: randomUUID(),
-      moduleId: 5,
+      module_id: 5,
       creator_name: 'naruto',
       title: 'Learn Nest.js',
       link: 'www.youtube.com',
@@ -19,6 +22,7 @@ describe('ContentController', () => {
       duration: 86400,
       created_at: new Date(),
       updated_at: new Date(),
+      completed: new Completed(),
     },
   ];
 
@@ -84,7 +88,7 @@ describe('ContentController', () => {
   });
 
   it('should return all contents', async () => {
-    expect(await controller.getContents()).toEqual(mockContent);
+    expect(await controller.getContents(new User())).toEqual(mockContent);
   });
 
   it('should return an updated content', async () => {

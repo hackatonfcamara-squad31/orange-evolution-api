@@ -8,7 +8,6 @@ import { Repository } from 'typeorm';
 import { validate } from 'uuid';
 import { Completed } from '../content-completed/entities/completed.entity';
 import { User } from '../users/entities/user.entity';
-import { UsersService } from '../users/user.service';
 import { CreateContentDTO } from './dto/create-content.dto';
 import { ResponseContentDTO } from './dto/response-content.dto';
 import { UpdateContentDTO } from './dto/update-content.dto';
@@ -21,7 +20,6 @@ export class ContentService {
     private contentRepository: Repository<Content>,
     @Inject('COMPLETED_REPOSITORY')
     private completedRepository: Repository<Completed>,
-    private readonly userService: UsersService,
   ) {}
 
   async findById(id: string): Promise<Content> {
@@ -45,9 +43,6 @@ export class ContentService {
     const completedContents = await this.getCompletedContents(user.id);
 
     const response: ResponseContentDTO[] = contents.map((content) => {
-      console.log(content.id);
-      console.log(completedContents);
-
       return {
         ...content,
         is_completed: completedContents.includes(content.id),
@@ -82,20 +77,16 @@ export class ContentService {
     return this.contentRepository.save(content);
   }
 
-  async getCompletedContents(id: string): Promise<any> {
+  async getCompletedContents(id: string): Promise<string[]> {
     if (!validate(id)) {
       throw new BadRequestException('Informe um ID válido.');
     }
-
-    console.log(id);
 
     const contents: Completed[] = await this.completedRepository
       .createQueryBuilder('completed')
       .select('completed.content')
       .where('completed.user.id = :id', { id })
       .getRawMany();
-
-    console.log(contents);
 
     const result = contents.map((completed) => completed['content_id']);
 

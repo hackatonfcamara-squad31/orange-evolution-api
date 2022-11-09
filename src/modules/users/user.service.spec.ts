@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { randomUUID } from 'crypto';
+import { Completed } from '../content-completed/entities/completed.entity';
 import { User } from './entities/user.entity';
 import { UsersService } from './user.service';
 
@@ -15,6 +16,7 @@ describe('UsersService', () => {
       is_admin: true,
       created_at: new Date(),
       updated_at: new Date(),
+      completed: [new Completed()],
     },
     {
       id: randomUUID(),
@@ -24,6 +26,7 @@ describe('UsersService', () => {
       is_admin: false,
       created_at: new Date(),
       updated_at: new Date(),
+      completed: [new Completed()],
     },
   ];
 
