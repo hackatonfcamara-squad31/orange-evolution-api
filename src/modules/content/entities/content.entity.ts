@@ -12,7 +12,7 @@ export class Content {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'module_id' })
+  @Column()
   module_id: number;
 
   @Column({ length: 255 })

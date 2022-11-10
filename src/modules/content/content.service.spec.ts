@@ -31,7 +31,7 @@ describe('ContentService', () => {
       type: 'video',
       duration: 86400,
       created_at: new Date(),
-      updated_at: new Date(),
+      updated_at: new Date(),q
       completed: new Completed(),
     },
   ];
