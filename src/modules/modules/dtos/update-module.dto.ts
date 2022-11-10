@@ -4,6 +4,6 @@ export class UpdateModuleDTO {
   @IsUUID()
   id: string;
 
-  @IsNotEmpty({ message: 'Please inform the module title.' })
+  @IsNotEmpty({ message: 'Por favor, informe o título do módulo.' })
   title: string;
 }

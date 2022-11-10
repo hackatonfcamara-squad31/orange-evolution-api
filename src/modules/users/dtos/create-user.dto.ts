@@ -1,15 +1,20 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsEmail, IsNotEmpty } from 'class-validator';
 
 export class CreateUserDTO {
-  @IsNotEmpty({ message: 'Por favor, informe seu nome.' })
+  @ApiProperty()
+  @IsNotEmpty({ message: 'Por favor, insira o seu nome.' })
   name: string;
 
-  @IsEmail({}, { message: 'Por favor, informe um email válido.' })
+  @ApiProperty()
+  @IsEmail({}, { message: 'Por favor, insira um email válido,' })
   email: string;
 
-  @IsNotEmpty({ message: 'Por favor, informe sua senha.' })
+  @ApiProperty()
+  @IsNotEmpty({ message: 'Por favor, insira sua senha.' })
   password: string;
 
-  @IsBoolean({ message: 'Por favor, informe o tipo da conta.' })
+  @ApiProperty()
+  @IsBoolean({ message: 'Por favor, insira o tipo da sua conta.' })
   is_admin: boolean;
 }

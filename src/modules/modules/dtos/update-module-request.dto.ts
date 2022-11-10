@@ -1,6 +1,8 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
 export class UpdateModuleRequestDTO {
-  @IsNotEmpty({ message: 'Please inform the module title.' })
+  @ApiProperty()
+  @IsNotEmpty({ message: 'Por favor, informe o título do módulo.' })
   title: string;
 }
