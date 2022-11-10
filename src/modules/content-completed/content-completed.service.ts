@@ -1,5 +1,11 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
+import { validate } from 'uuid';
 import { ContentService } from '../content/content.service';
 import { UsersService } from '../users/user.service';
 import { CreateCompletedStatusDTO } from './dtos/create-completed-status.dto';
@@ -37,14 +43,16 @@ export class ContentCompletedService {
   }
 
   async deleteByContentId(id: string) {
+    if (!validate(id)) {
+      throw new BadRequestException('Informe um ID válido.');
+    }
+
     const contentStatus = await this.completedRepository.findOne({
       where: { content: { id } },
     });
 
     if (!contentStatus) {
-      throw new BadRequestException(
-        'não existe registro do conteúdo solicitado',
-      );
+      throw new NotFoundException('não existe registro do conteúdo solicitado');
     }
 
     return this.completedRepository.remove(contentStatus);
