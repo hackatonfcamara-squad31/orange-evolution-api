@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 
 export class CreateModuleRequestDTO {
   @ApiProperty()
-  @IsNotEmpty({ message: 'Please inform the module title.' })
+  @IsNotEmpty({ message: 'Por favor, informe o título do módulo.' })
   title: string;
-  
+
   @ApiProperty()
-  @IsNotEmpty({ message: 'Please inform the module position.' })
+  @IsNumber({}, { message: 'Por favor, informe a posição do módulo.' })
   order: number;
 }

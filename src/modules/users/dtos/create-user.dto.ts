@@ -3,18 +3,18 @@ import { IsBoolean, IsEmail, IsNotEmpty } from 'class-validator';
 
 export class CreateUserDTO {
   @ApiProperty()
-  @IsNotEmpty({ message: 'Please inform your name.' })
+  @IsNotEmpty({ message: 'Por favor, insira o seu nome.' })
   name: string;
 
   @ApiProperty()
-  @IsEmail({}, { message: 'Please inform a valid email.' })
+  @IsEmail({}, { message: 'Por favor, insira um email válido,' })
   email: string;
 
   @ApiProperty()
-  @IsNotEmpty({ message: 'Please inform your password.' })
+  @IsNotEmpty({ message: 'Por favor, insira sua senha.' })
   password: string;
 
   @ApiProperty()
-  @IsBoolean({ message: 'Please inform your account type.' })
+  @IsBoolean({ message: 'Por favor, insira o tipo da sua conta.' })
   is_admin: boolean;
 }
