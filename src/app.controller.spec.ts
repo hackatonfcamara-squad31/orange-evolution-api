@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { randomUUID } from 'crypto';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { User } from './modules/users/entities/user.entity';
+import { Completed } from './modules/content-completed/entities/completed.entity';
 
 describe('AppController', () => {
   let appController: AppController;
@@ -46,6 +46,7 @@ describe('AppController', () => {
     is_admin: true,
     created_at: new Date(),
     updated_at: new Date(),
+    completed: [new Completed()],
   };
 
   describe('/me', () => {

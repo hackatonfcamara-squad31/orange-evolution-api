@@ -1,9 +1,11 @@
+import { Completed } from 'src/modules/content-completed/entities/completed.entity';
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity('users')
@@ -28,4 +30,7 @@ export class User {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @OneToMany(() => Completed, (completed) => completed.user)
+  completed: Completed[];
 }

@@ -1,7 +1,9 @@
+import { Completed } from 'src/modules/content-completed/entities/completed.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -33,4 +35,7 @@ export class Content {
 
   @CreateDateColumn({ type: 'timestamp' })
   updated_at: Date;
+
+  @OneToOne(() => Completed, (completed) => completed.content)
+  completed: Completed;
 }

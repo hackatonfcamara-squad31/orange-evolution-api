@@ -2,6 +2,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { randomUUID } from 'crypto';
 import 'dotenv/config';
+import { Completed } from '../content-completed/entities/completed.entity';
 import { User } from '../users/entities/user.entity';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -20,6 +21,7 @@ describe('AuthController', () => {
     is_admin: true,
     created_at: new Date(),
     updated_at: new Date(),
+    completed: [new Completed()],
   };
 
   const mockAuthService = {
