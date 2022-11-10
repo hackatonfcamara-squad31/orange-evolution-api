@@ -1,7 +1,6 @@
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { randomUUID } from 'crypto';
-import { ContentCompletedService } from '../content-completed/content-completed.service';
 import { Completed } from '../content-completed/entities/completed.entity';
 import { User } from '../users/entities/user.entity';
 import { ContentService } from './content.service';
@@ -39,7 +38,7 @@ describe('ContentService', () => {
 
   const completed: Completed = {
     content: mockContent[0],
-    id: '2ab06422-eb5f-4348-b6b6-7c1cd1ce9c15',
+    id: '2ab06422-eb5f-4348-b6b6-7c1cd1ce9c16',
     user: mockUser,
     created_at: new Date(),
   };
@@ -47,12 +46,21 @@ describe('ContentService', () => {
   const mockContentRepository = {
     findOne: jest.fn().mockImplementation(),
     save: jest.fn().mockImplementation(),
-    find: jest.fn().mockImplementation(),
+    find: jest.fn().mockImplementation(() => mockContent),
     create: jest.fn().mockImplementation(),
     preload: jest.fn().mockImplementation(),
   };
 
-  const mockCompletedRepository = {};
+  const createQueryBuilder = {
+    select: () => createQueryBuilder,
+    groupBy: () => createQueryBuilder,
+    where: () => createQueryBuilder,
+    getRawMany: () => [completed],
+  };
+
+  const mockCompletedRepository = {
+    createQueryBuilder: jest.fn().mockImplementation(() => createQueryBuilder),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -86,6 +94,20 @@ describe('ContentService', () => {
   it('should throw an exception when passing a wrong id to findById', async () => {
     const id = '2ab06422-eb5f-4348-b6b6-7c1cd1ce9c14';
     await expect(() => service.findById(id)).rejects.toThrow(NotFoundException);
+  });
+
+  it('should throw an exception when passing an invalid id to findById', async () => {
+    const id = 'asdf';
+    await expect(() => service.findById(id)).rejects.toThrow(
+      BadRequestException,
+    );
+  });
+
+  it('should throw an exception when passing an invalid id to getCompletedContents', async () => {
+    const id = 'asdf';
+    await expect(() => service.getCompletedContents(id)).rejects.toThrow(
+      BadRequestException,
+    );
   });
 
   it('should create a new content record and return that', async () => {
@@ -146,5 +168,18 @@ describe('ContentService', () => {
     expect(await service.update(id, updateDto)).toEqual(updatedContent);
 
     expect(mockContentRepository.preload).toBeCalled();
+  });
+
+  it('should return a list of contents completed by a given user', async () => {
+    expect(await service.getCompletedContents(mockUser.id)).toEqual([
+      '2ab06422-eb5f-4348-b6b6-7c1cd1ce9c15',
+    ]);
+  });
+
+  it('should return all contents for a given user', async () => {
+    const result = mockContent.map((content) => {
+      return { ...content, is_completed: true };
+    });
+    expect(await service.findAll(mockUser)).toEqual(result);
   });
 });

@@ -88,7 +88,7 @@ export class ContentService {
       .where('completed.user.id = :id', { id })
       .getRawMany();
 
-    const result = contents.map((completed) => completed['content_id']);
+    const result = contents.map((completed) => completed.content.id);
 
     return result;
   }
