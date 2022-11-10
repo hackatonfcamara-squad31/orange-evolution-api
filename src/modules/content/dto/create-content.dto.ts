@@ -1,8 +1,9 @@
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsUUID } from 'class-validator';
 
 export class CreateContentDTO {
   @IsNotEmpty({ message: 'Por favor, informe o ID do módulo' })
-  module_id: number;
+  @IsUUID()
+  module_id: string;
 
   @IsNotEmpty({ message: 'Por favor, informe o  título do conteúdo' })
   title: string;

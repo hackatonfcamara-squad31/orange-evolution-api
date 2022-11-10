@@ -20,7 +20,9 @@ export class Trail {
   @Column({ nullable: true })
   icon_url: string;
 
-  @OneToMany(() => Module, (module) => module.trail)
+  @OneToMany(() => Module, (module) => module.trail, {
+    cascade: true,
+  })
   @JoinColumn({ name: 'modules' })
   modules: Module[];
 

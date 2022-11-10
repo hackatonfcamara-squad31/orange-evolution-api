@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  forwardRef,
   Inject,
   Injectable,
   NotFoundException,
@@ -7,6 +8,7 @@ import {
 import { Repository } from 'typeorm';
 import { validate } from 'uuid';
 import { Completed } from '../content-completed/entities/completed.entity';
+import { ModulesService } from '../modules/module.service';
 import { User } from '../users/entities/user.entity';
 import { CreateContentDTO } from './dto/create-content.dto';
 import { ResponseContentDTO } from './dto/response-content.dto';
@@ -20,7 +22,9 @@ export class ContentService {
     private contentRepository: Repository<Content>,
     @Inject('COMPLETED_REPOSITORY')
     private completedRepository: Repository<Completed>,
-  ) {}
+    @Inject(ModulesService)
+    private modulesService: ModulesService
+  ) { }
 
   async findById(id: string): Promise<Content> {
     if (!validate(id)) {
@@ -52,22 +56,30 @@ export class ContentService {
   }
 
   async create(createContentDTO: CreateContentDTO): Promise<Content> {
-    const content = await this.contentRepository.create({
+    const module = await this.modulesService.findById(createContentDTO.module_id)
+
+    if (!module) throw new NotFoundException('O módulo selecionado não foi encontrado');
+
+    const content = this.contentRepository.create({
       ...createContentDTO,
+      module: module,
     });
 
-    return this.contentRepository.save(content);
+    return await this.contentRepository.save(content);
   }
 
   async update(
     id: string,
     updateContentDTO: UpdateContentDTO,
   ): Promise<Content> {
-    const date: Date = new Date(Date.now());
+    const module = await this.modulesService.findById(updateContentDTO.module_id)
+
+    if (!module) throw new NotFoundException('O módulo selecionado não foi encontrado');
+
     const content = await this.contentRepository.preload({
       id,
       ...updateContentDTO,
-      updated_at: date,
+      module: module,
     });
 
     if (!content) {
@@ -91,5 +103,15 @@ export class ContentService {
     const result = contents.map((completed) => completed.content.id);
 
     return result;
+  }
+
+  async delete(id: string): Promise<void> {
+    const deletedContent = await this.contentRepository.findOne({
+      where: { id },
+    });
+
+    if (!deletedContent) throw new NotFoundException('Conteúdo não encontrado.');
+
+    await this.contentRepository.delete(id);
   }
 }

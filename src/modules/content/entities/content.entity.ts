@@ -1,19 +1,24 @@
 import { Completed } from 'src/modules/content-completed/entities/completed.entity';
+import { Module } from 'src/modules/modules/entities/module.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity('contents')
 export class Content {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  module_id: number;
+  @ManyToOne(() => Module, (module) => module.contents, {
+    onDelete: 'CASCADE'
+  })
+  module: Module;
 
   @Column({ length: 255 })
   title: string;
@@ -33,9 +38,11 @@ export class Content {
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
 
-  @CreateDateColumn({ type: 'timestamp' })
+  @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date;
 
-  @OneToOne(() => Completed, (completed) => completed.content)
+  @OneToOne(() => Completed, (completed) => completed.content, {
+    cascade: true
+  })
   completed: Completed;
 }
