@@ -11,6 +11,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { IsPublic } from '../auth/decorators/is-public.decorator';
 import { CreateModuleRequestDTO } from './dtos/create-module-request.dto';
 import { FindModulesQuery } from './dtos/find-modules-query.dto';
@@ -25,6 +26,8 @@ export class ModulesController {
   constructor(private modulesService: ModulesService) { }
 
   @Post()
+  @ApiBearerAuth()
+  @ApiBody({ type: CreateModuleRequestDTO })
   @UseInterceptors(FileInterceptor('icon'))
   async create(
     @Body() moduleData: CreateModuleRequestDTO,
@@ -37,12 +40,14 @@ export class ModulesController {
     return this.modulesService.create({ ...moduleData, icon: iconFilename });
   }
 
-  @Put()
+  @Put('/reorder')
+  @ApiBearerAuth()
   async reorder(@Body() modules: ReorderModulesDTO) {
     return this.modulesService.reorder(modules);
   }
 
   @Put('icon/:id')
+  @ApiBearerAuth()
   @UseInterceptors(FileInterceptor('icon'))
   async updateIcon(
     @Param('id') id: string,
@@ -56,6 +61,7 @@ export class ModulesController {
   }
 
   @Put(':id')
+  @ApiBearerAuth()
   async update(
     @Param('id') id: string,
     @Body() moduleData: UpdateModuleRequestDTO,
@@ -76,6 +82,7 @@ export class ModulesController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
   async delete(@Param('id') id: string) {
     return this.modulesService.delete(id);
   }

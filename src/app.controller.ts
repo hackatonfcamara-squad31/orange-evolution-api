@@ -1,4 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { AppService } from './app.service';
 import { CurrentUser } from './modules/auth/decorators/current-user.decorator';
 import { IsPublic } from './modules/auth/decorators/is-public.decorator';
@@ -15,6 +16,7 @@ export class AppController {
   }
 
   @Get('me')
+  @ApiBearerAuth()
   getMe(@CurrentUser() user: User): User {
     return user;
   }
