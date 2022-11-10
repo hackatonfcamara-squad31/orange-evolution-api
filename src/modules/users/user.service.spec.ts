@@ -67,8 +67,9 @@ describe('UsersService', () => {
 
     expect(await service.create(newUser)).toEqual({
       id: expect.any(String),
-      password: expect.any(String),
-      ...newUser,
+      name: newUser.name,
+      email: newUser.email,
+      is_admin: newUser.is_admin,
     });
 
     expect(mockUsersRepository.create).toHaveBeenCalledWith({
