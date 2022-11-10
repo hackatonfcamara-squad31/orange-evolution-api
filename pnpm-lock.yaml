@@ -6,6 +6,7 @@ specifiers:
   '@nestjs/config': ^2.2.0
   '@nestjs/core': ^9.0.0
   '@nestjs/jwt': ^9.0.0
+  '@nestjs/mapped-types': ^1.2.0
   '@nestjs/passport': ^9.0.0
   '@nestjs/platform-express': ^9.0.0
   '@nestjs/schematics': ^9.0.0
@@ -59,6 +60,7 @@ dependencies:
   '@nestjs/config': 2.2.0_yjxybkvltbh2d3oivnq5etx3oi
   '@nestjs/core': 9.1.6_bx3wiubfryfbvpzqwr6ml4ajpu
   '@nestjs/jwt': 9.0.0_@nestjs+common@9.1.6
+  '@nestjs/mapped-types': 1.2.0_dp3e5vqzoo2uvzu33xnf3h4a44
   '@nestjs/passport': 9.0.0_pkfoh2sq4j5mhokn7ayryfespi
   '@nestjs/platform-express': 9.1.6_6whalgrsvisgjemghedgkfq7dm
   '@nestjs/swagger': 6.1.3_h6kbnmnvyyl73y6mu4cczkstmm

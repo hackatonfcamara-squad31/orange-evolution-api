@@ -9,7 +9,7 @@ export class UsersService {
   constructor(
     @Inject('USER_REPOSITORY')
     private usersRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async create({
     name,
@@ -19,18 +19,22 @@ export class UsersService {
   }: CreateUserDTO): Promise<User> {
     const userExists = await this.usersRepository.findOne({ where: { email } });
 
-    if (userExists) throw new BadRequestException('Email already in use.');
+    if (userExists) throw new BadRequestException('Email já cadastrado.');
 
     const passwordHash = await hash(password, 8);
 
-    const user = this.usersRepository.create({
+    const createdUser = this.usersRepository.create({
       name,
       email,
       password: passwordHash,
       is_admin,
     });
 
-    return await this.usersRepository.save(user);
+    const user = await this.usersRepository.save(createdUser);
+
+    delete user.password;
+
+    return user;
   }
 
   async findUserByEmail(email: string, getPassword?: boolean): Promise<User> {
@@ -47,7 +51,7 @@ export class UsersService {
         .getOne();
     } else user = await this.usersRepository.findOne({ where: { email } });
 
-    if (!user) throw new BadRequestException('Email does not exist.');
+    if (!user) throw new BadRequestException('Email não encontrado.');
 
     return user;
   }

@@ -10,6 +10,7 @@ import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { ModulesModule } from './modules/modules/module.module';
 import { StorageModule } from './modules/storage/storage.module';
 import { UserModule } from './modules/users/user.module';
+import { ContentModule } from './modules/content/content.module';
 
 @Global()
 @Module({
@@ -20,6 +21,7 @@ import { UserModule } from './modules/users/user.module';
     ModulesModule,
     MulterModule.register(upload.multerConfig),
     StorageModule,
+    ContentModule,
   ],
   controllers: [AppController],
   providers: [
