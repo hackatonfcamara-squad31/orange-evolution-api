@@ -66,10 +66,10 @@ describe('ModuleController (e2e)', () => {
           expect.objectContaining({
             title: 'Programming Basics Part 1',
             order: 1,
-            icon_url: expect.any(String)
-          })
-        )
-      })
+            icon_url: expect.any(String),
+          }),
+        );
+      });
   });
 
   it('/api/modules reorder (PUT)', async () => {
@@ -86,14 +86,14 @@ describe('ModuleController (e2e)', () => {
     await request(app.getHttpServer())
       .post('/modules')
       .send({ ...defaultModule, order: 2 })
-      .expect(201)
+      .expect(201);
 
     return request(app.getHttpServer())
       .put('/modules')
       .send({
         id: createdModule.id,
-        order: 2
+        order: 2,
       })
-      .expect(200)
-  })
+      .expect(200);
+  });
 });

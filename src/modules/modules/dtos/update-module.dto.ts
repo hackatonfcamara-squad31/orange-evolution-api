@@ -6,4 +6,6 @@ export class UpdateModuleDTO {
 
   @IsNotEmpty({ message: 'Por favor, informe o título do módulo.' })
   title: string;
+
+  description?: string;
 }

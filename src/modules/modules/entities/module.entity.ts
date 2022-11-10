@@ -1,9 +1,7 @@
+import { Content } from 'src/modules/content/entities/content.entity';
+import { Trail } from 'src/modules/trails/entities/trail.entity';
 import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
+  Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn
 } from 'typeorm';
 
 @Entity('modules')
@@ -14,11 +12,22 @@ export class Module {
   @Column()
   title: string;
 
-  @Column({ unique: true, nullable: true })
+  @Column({ nullable: true })
+  description: string;
+
+  @Column({ nullable: true, unique: false })
   order: number;
 
-  @Column({ nullable: true })
-  icon_url: string;
+  @ManyToOne(() => Trail, (trail) => trail.modules, {
+    onDelete: 'CASCADE'
+  })
+  trail: Trail;
+
+  @OneToMany(() => Content, (content) => content.module, {
+    cascade: true,
+  })
+  @JoinColumn({ name: 'contents' })
+  contents: Content[];
 
   @CreateDateColumn()
   created_at: Date;

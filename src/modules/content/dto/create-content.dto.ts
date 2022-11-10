@@ -1,10 +1,12 @@
+
+import { IsNotEmpty, IsNumber, IsUUID } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber } from 'class-validator';
 
 export class CreateContentDTO {
   @ApiProperty()
   @IsNotEmpty({ message: 'Por favor, informe o ID do módulo' })
-  module_id: number;
+  @IsUUID()
+  module_id: string;
 
   @ApiProperty()
   @IsNotEmpty({ message: 'Por favor, informe o  título do conteúdo' })

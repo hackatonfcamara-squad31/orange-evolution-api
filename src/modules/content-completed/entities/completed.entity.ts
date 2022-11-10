@@ -21,7 +21,9 @@ export class Completed {
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   created_at: Date;
 
-  @OneToOne(() => Content, (content) => content.completed)
+  @OneToOne(() => Content, (content) => content.completed, {
+    onDelete: 'CASCADE'
+  })
   @JoinColumn({ name: 'content_id' })
   content: Content;
 }

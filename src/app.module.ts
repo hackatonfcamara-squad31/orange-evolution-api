@@ -11,6 +11,7 @@ import { ModulesModule } from './modules/modules/module.module';
 import { StorageModule } from './modules/storage/storage.module';
 import { UserModule } from './modules/users/user.module';
 import { ContentModule } from './modules/content/content.module';
+import { TrailsModule } from './modules/trails/trail.module';
 import { ContentCompletedModule } from './modules/content-completed/content-completed.module';
 
 @Global()
@@ -22,6 +23,7 @@ import { ContentCompletedModule } from './modules/content-completed/content-comp
     ContentModule,
     ContentCompletedModule,
     ModulesModule,
+    TrailsModule,
     MulterModule.register(upload.multerConfig),
     StorageModule,
   ],

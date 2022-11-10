@@ -38,10 +38,14 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
     return canActivatePromise.catch((error) => {
       if (error instanceof UnauthorizedError) {
-        throw new UnauthorizedException('Token inválido. Faça login para continuar.');
+        throw new UnauthorizedException(
+          'Token inválido. Faça login para continuar.',
+        );
       }
 
-      throw new UnauthorizedException('Token inválido. Faça login para continuar.');
+      throw new UnauthorizedException(
+        'Token inválido. Faça login para continuar.',
+      );
     });
   }
 }

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateModuleDTO {
   @ApiProperty()
@@ -7,9 +7,13 @@ export class CreateModuleDTO {
   title: string;
 
   @ApiProperty()
+  @IsOptional()
+  description?: string;
+
+  @ApiProperty()
   @IsNotEmpty({ message: 'Por favor, informe a posição do módulo' })
   order: number;
 
-  @ApiProperty()
-  icon?: string;
+  @IsNotEmpty({ message: 'Por favor, informe a trilha a qual o módulo pertence.' })
+  trail: string;
 }
