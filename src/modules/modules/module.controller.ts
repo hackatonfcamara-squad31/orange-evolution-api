@@ -8,6 +8,7 @@ import {
   Put,
   Query
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { IsPublic } from '../auth/decorators/is-public.decorator';
 import { CreateModuleRequestDTO } from './dtos/create-module-request.dto';
 import { FindModulesQuery } from './dtos/find-modules-query.dto';
@@ -22,18 +23,22 @@ export class ModulesController {
   constructor(private modulesService: ModulesService) { }
 
   @Post()
+  @ApiBearerAuth()
+  @ApiBody({ type: CreateModuleRequestDTO })
   async create(
     @Body() moduleData: CreateModuleRequestDTO,
   ): Promise<Module> {
     return this.modulesService.create(moduleData);
   }
 
-  @Put()
+  @Put('/reorder')
+  @ApiBearerAuth()
   async reorder(@Body() modules: ReorderModulesDTO) {
     return this.modulesService.reorder(modules);
   }
 
   @Put(':id')
+  @ApiBearerAuth()
   async update(
     @Param('id') id: string,
     @Body() moduleData: UpdateModuleRequestDTO,
@@ -54,6 +59,7 @@ export class ModulesController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
   async delete(@Param('id') id: string) {
     return this.modulesService.delete(id);
   }

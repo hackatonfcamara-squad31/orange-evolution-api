@@ -1,13 +1,16 @@
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsNumber } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateModuleRequestDTO {
-  @IsNotEmpty({ message: 'Please inform the module title.' })
+  @ApiProperty()
+  @IsNotEmpty({ message: 'Por favor, informe o título do módulo.' })
   title: string;
   
   @IsOptional()
   description?: string;
 
-  @IsNotEmpty({ message: 'Please inform the module position.' })
+  @ApiProperty()
+  @IsNumber({}, { message: 'Por favor, informe a posição do módulo.' })
   order: number;
 
   @IsNotEmpty({ message: 'Por favor, informe a trilha a qual o módulo pertence.' })

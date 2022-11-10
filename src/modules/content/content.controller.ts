@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { ApiBody } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../users/entities/user.entity';
 import { ContentService } from './content.service';
@@ -28,6 +29,7 @@ export class ContentController {
   }
 
   @Patch(':id')
+  @ApiBody({ type: UpdateContentDTO })
   async update(
     @Param('id') id: string,
     @Body() updateContent: UpdateContentDTO,

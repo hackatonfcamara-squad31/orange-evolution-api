@@ -1,4 +1,28 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateContentDTO } from './create-content.dto';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional } from 'class-validator';
 
-export class UpdateContentDTO extends PartialType(CreateContentDTO) {}
+export class UpdateContentDTO {
+  @ApiProperty()
+  @IsOptional()
+  module_id?: number;
+
+  @ApiProperty()
+  @IsOptional()
+  title?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  type?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  creator_name?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  duration?: number;
+
+  @ApiProperty()
+  @IsOptional()
+  link?: string;
+}

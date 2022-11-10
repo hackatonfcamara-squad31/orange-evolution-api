@@ -41,6 +41,7 @@ async function bootstrap() {
     .setTitle('Orange Evolution Backend')
     .setDescription('Api Rest do Orange Evolution')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
