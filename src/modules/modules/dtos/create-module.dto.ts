@@ -4,6 +4,8 @@ export class CreateModuleDTO {
   @IsNotEmpty({ message: 'Please inform the module title.' })
   title: string;
 
+  description?: string;
+
   @IsNotEmpty({ message: 'Please inform the module position.' })
   order: number;
 

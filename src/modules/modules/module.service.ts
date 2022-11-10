@@ -24,7 +24,7 @@ export class ModulesService {
     private trailsService: TrailsService,
   ) { }
 
-  async create({ title, order, trail }: CreateModuleDTO): Promise<Module> {
+  async create({ title, description, order, trail }: CreateModuleDTO): Promise<Module> {
     const moduleInposition = await this.modulesRepository.findOne({
       where: { order, trail: { id: trail } },
     });
@@ -41,6 +41,7 @@ export class ModulesService {
 
     const module = this.modulesRepository.create({
       title,
+      description,
       order,
       trail: trailExists
     });
@@ -48,7 +49,7 @@ export class ModulesService {
     return await this.modulesRepository.save(module);
   }
 
-  async update({ id, title }: UpdateModuleDTO): Promise<Module> {
+  async update({ id, title, description }: UpdateModuleDTO): Promise<Module> {
     const module = await this.modulesRepository.findOne({ where: { id } });
 
     if (!module) throw new NotFoundException('Módulo não encontrado.');
@@ -58,12 +59,14 @@ export class ModulesService {
       {
         ...module,
         title,
+        description,
       },
     );
 
     return {
       ...module,
       title,
+      description
     };
   };
 
