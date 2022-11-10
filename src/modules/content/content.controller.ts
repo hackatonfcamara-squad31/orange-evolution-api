@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { ApiBody } from '@nestjs/swagger';
 import { IsPublic } from '../auth/decorators/is-public.decorator';
 import { ContentService } from './content.service';
 import { CreateContentDTO } from './dto/create-content.dto';
@@ -7,7 +8,7 @@ import { Content } from './entities/content.entity';
 
 @Controller('content')
 export class ContentController {
-  constructor(private readonly contentService: ContentService) {}
+  constructor(private readonly contentService: ContentService) { }
 
   @IsPublic()
   @Get()
@@ -31,6 +32,7 @@ export class ContentController {
 
   @IsPublic()
   @Patch(':id')
+  @ApiBody({ type: UpdateContentDTO })
   async update(
     @Param('id') id: string,
     @Body() updateContent: UpdateContentDTO,
