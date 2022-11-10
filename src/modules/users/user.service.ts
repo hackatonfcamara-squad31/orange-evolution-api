@@ -29,16 +29,18 @@ export class UsersService {
 
     const passwordHash = await hash(password, 8);
 
-    const user = this.usersRepository.create({
+    const createdUser = this.usersRepository.create({
       name,
       email,
       password: passwordHash,
       is_admin,
     });
 
-    // user.password = '';
+    const user = await this.usersRepository.save(createdUser);
 
-    return await this.usersRepository.save(user);
+    delete user.password;
+
+    return user;
   }
 
   async findUserByEmail(email: string, getPassword?: boolean): Promise<User> {

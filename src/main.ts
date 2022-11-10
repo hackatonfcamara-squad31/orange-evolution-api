@@ -5,6 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as express from 'express';
 import 'dotenv/config';
 import { AppModule } from './app.module';
+import { resolve } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -23,6 +24,8 @@ async function bootstrap() {
 
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
+
+  app.use('/media', express.static(resolve(__dirname, '..', 'uploads')));
 
   app.setGlobalPrefix('api');
 
