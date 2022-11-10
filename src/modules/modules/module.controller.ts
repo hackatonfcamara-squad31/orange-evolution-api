@@ -22,7 +22,7 @@ import { ModulesService } from './module.service';
 
 @Controller('modules')
 export class ModulesController {
-  constructor(private modulesService: ModulesService) { }
+  constructor(private modulesService: ModulesService) {}
 
   @Post()
   @UseInterceptors(FileInterceptor('icon'))

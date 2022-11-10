@@ -11,6 +11,7 @@ import { ModulesModule } from './modules/modules/module.module';
 import { StorageModule } from './modules/storage/storage.module';
 import { UserModule } from './modules/users/user.module';
 import { ContentModule } from './modules/content/content.module';
+import { TrailsModule } from './modules/trails/trail.module';
 
 @Global()
 @Module({
@@ -19,6 +20,7 @@ import { ContentModule } from './modules/content/content.module';
     UserModule,
     AuthModule,
     ModulesModule,
+    TrailsModule,
     MulterModule.register(upload.multerConfig),
     StorageModule,
     ContentModule,
