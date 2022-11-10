@@ -1,6 +1,12 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { hash } from 'bcrypt';
 import { Repository } from 'typeorm';
+import { validate } from 'uuid';
 import { CreateUserDTO } from './dtos/create-user.dto';
 import { User } from './entities/user.entity';
 
@@ -52,6 +58,20 @@ export class UsersService {
     } else user = await this.usersRepository.findOne({ where: { email } });
 
     if (!user) throw new BadRequestException('Email não encontrado.');
+
+    return user;
+  }
+
+  async findUserById(id: string): Promise<User> {
+    if (!validate(id)) {
+      throw new BadRequestException('Informe um ID válido.');
+    }
+
+    const user = await this.usersRepository.findOne({ where: { id } });
+
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado.');
+    }
 
     return user;
   }

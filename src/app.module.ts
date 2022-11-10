@@ -12,6 +12,7 @@ import { StorageModule } from './modules/storage/storage.module';
 import { UserModule } from './modules/users/user.module';
 import { ContentModule } from './modules/content/content.module';
 import { TrailsModule } from './modules/trails/trail.module';
+import { ContentCompletedModule } from './modules/content-completed/content-completed.module';
 
 @Global()
 @Module({
@@ -19,11 +20,12 @@ import { TrailsModule } from './modules/trails/trail.module';
     ConfigModule.forRoot(),
     UserModule,
     AuthModule,
+    ContentModule,
+    ContentCompletedModule,
     ModulesModule,
     TrailsModule,
     MulterModule.register(upload.multerConfig),
     StorageModule,
-    ContentModule,
   ],
   controllers: [AppController],
   providers: [
