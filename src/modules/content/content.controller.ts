@@ -16,13 +16,11 @@ export class ContentController {
     return this.contentService.findAll(user);
   }
 
-  @IsPublic()
   @Get(':id')
   async getContentById(@Param('id') id: string): Promise<Content> {
     return this.contentService.findById(id);
   }
 
-  @IsPublic()
   @Post()
   async createContent(
     @Body() createContentDTO: CreateContentDTO,
@@ -30,7 +28,6 @@ export class ContentController {
     return this.contentService.create(createContentDTO);
   }
 
-  @IsPublic()
   @Patch(':id')
   async update(
     @Param('id') id: string,
