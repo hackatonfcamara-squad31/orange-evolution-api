@@ -1,9 +1,6 @@
+import { Trail } from 'src/modules/trails/entities/trail.entity';
 import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
+  Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn
 } from 'typeorm';
 
 @Entity('modules')
@@ -14,11 +11,11 @@ export class Module {
   @Column()
   title: string;
 
-  @Column({ unique: true, nullable: true })
+  @Column({ nullable: true, unique: false })
   order: number;
 
-  @Column({ nullable: true })
-  icon_url: string;
+  @ManyToOne(() => Trail, (trail) => trail.modules)
+  trail: Trail;
 
   @CreateDateColumn()
   created_at: Date;

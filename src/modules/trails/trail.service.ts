@@ -1,11 +1,13 @@
 import {
   BadRequestException,
+  forwardRef,
   Inject,
   Injectable,
-  NotFoundException,
+  NotFoundException
 } from '@nestjs/common';
-import { MoreThan, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import upload from '../../config/upload';
+import { ModulesService } from '../modules/module.service';
 import StorageProvider from '../storage/storage-provider-model';
 import { CreateTrailDTO } from './dtos/create-trail.dto';
 import { UpdateTrailDTO } from './dtos/update-trail.dto';
@@ -17,36 +19,49 @@ export class TrailsService {
     @Inject('TRAIL_REPOSITORY')
     private trailsRepository: Repository<Trail>,
 
+    @Inject(forwardRef(() => ModulesService))
+    private modulesService: ModulesService,
+
     @Inject('StorageProvider')
     private storageProvider: StorageProvider,
-  ) {}
+  ) { }
 
-  async create({ title, icon }: CreateTrailDTO): Promise<Trail> {
+  async create({ title, icon, modules }: CreateTrailDTO): Promise<Trail> {
     const imageUrl = await this.storageProvider.saveFile(icon);
 
-    const module = this.trailsRepository.create({
+    const createdTrail = this.trailsRepository.create({
       title,
       icon_url: imageUrl,
     });
 
-    return await this.trailsRepository.save(module);
+    const trail = await this.trailsRepository.save(createdTrail);
+
+    if (modules.length > 0) {
+      const modulePromises = modules.map(async (module) => {
+        await this.modulesService.create({ ...module, trail: trail.id })
+      })
+
+      await Promise.all(modulePromises)
+    }
+
+    return trail;
   }
 
   async update({ id, title }: UpdateTrailDTO): Promise<Trail> {
-    const module = await this.trailsRepository.findOne({ where: { id } });
+    const trail = await this.trailsRepository.findOne({ where: { id } });
 
-    if (!module) throw new NotFoundException('Trilha não encontrada.');
+    if (!trail) throw new NotFoundException('Trilha não encontrada.');
 
     await this.trailsRepository.update(
-      { id: module.id },
+      { id: trail.id },
       {
-        ...module,
+        ...trail,
         title,
       },
     );
 
     return {
-      ...module,
+      ...trail,
       title,
     };
   }
@@ -55,14 +70,14 @@ export class TrailsService {
     if (icon === '')
       throw new BadRequestException('Conteúdo enviado não é uma imagem.');
 
-    const module = await this.trailsRepository.findOne({ where: { id } });
+    const trail = await this.trailsRepository.findOne({ where: { id } });
 
-    if (!module) {
+    if (!trail) {
       if (upload.driver === 'disk') await this.storageProvider.deleteFile(icon);
       throw new NotFoundException('Trilha não encontrada.');
     }
 
-    await this.storageProvider.deleteFile(module.icon_url);
+    await this.storageProvider.deleteFile(trail.icon_url);
 
     const imageUrl = await this.storageProvider.saveFile(icon);
 
@@ -74,17 +89,17 @@ export class TrailsService {
     );
 
     return {
-      ...module,
+      ...trail,
       icon_url: imageUrl,
     };
   }
 
   async findById(id: string): Promise<Trail> {
-    const module = await this.trailsRepository.findOne({ where: { id } });
+    const trail = await this.trailsRepository.findOne({ where: { id }, relations: ['modules'] });
 
-    if (!module) throw new NotFoundException('Trilha não encontrada.');
+    if (!trail) throw new NotFoundException('Trilha não encontrada.');
 
-    return module;
+    return trail;
   }
 
   async find(): Promise<Trail[]> {

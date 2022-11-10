@@ -1,9 +1,12 @@
+import { Module } from 'src/modules/modules/entities/module.entity';
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity('trails')
@@ -16,6 +19,10 @@ export class Trail {
 
   @Column({ nullable: true })
   icon_url: string;
+
+  @OneToMany(() => Module, (module) => module.trail)
+  @JoinColumn({ name: 'modules' })
+  modules: Module[];
 
   @CreateDateColumn()
   created_at: Date;

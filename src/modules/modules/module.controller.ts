@@ -6,11 +6,8 @@ import {
   Param,
   Post,
   Put,
-  Query,
-  UploadedFile,
-  UseInterceptors,
+  Query
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { IsPublic } from '../auth/decorators/is-public.decorator';
 import { CreateModuleRequestDTO } from './dtos/create-module-request.dto';
 import { FindModulesQuery } from './dtos/find-modules-query.dto';
@@ -22,37 +19,18 @@ import { ModulesService } from './module.service';
 
 @Controller('modules')
 export class ModulesController {
-  constructor(private modulesService: ModulesService) {}
+  constructor(private modulesService: ModulesService) { }
 
   @Post()
-  @UseInterceptors(FileInterceptor('icon'))
   async create(
     @Body() moduleData: CreateModuleRequestDTO,
-    @UploadedFile() icon?: Express.Multer.File,
   ): Promise<Module> {
-    let iconFilename = '';
-
-    if (icon) iconFilename = icon.filename;
-
-    return this.modulesService.create({ ...moduleData, icon: iconFilename });
+    return this.modulesService.create(moduleData);
   }
 
   @Put()
   async reorder(@Body() modules: ReorderModulesDTO) {
     return this.modulesService.reorder(modules);
-  }
-
-  @Put('icon/:id')
-  @UseInterceptors(FileInterceptor('icon'))
-  async updateIcon(
-    @Param('id') id: string,
-    @UploadedFile() icon: Express.Multer.File,
-  ): Promise<Module> {
-    let iconFilename = '';
-
-    if (icon) iconFilename = icon.filename;
-
-    return this.modulesService.updateIcon(id, iconFilename);
   }
 
   @Put(':id')

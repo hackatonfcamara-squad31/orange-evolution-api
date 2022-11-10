@@ -1,12 +1,12 @@
 import {
   BadRequestException,
+  forwardRef,
   Inject,
   Injectable,
-  NotFoundException,
+  NotFoundException
 } from '@nestjs/common';
-import upload from '../../config/upload';
 import { MoreThan, Repository } from 'typeorm';
-import StorageProvider from '../storage/storage-provider-model';
+import { TrailsService } from '../trails/trail.service';
 import { CreateModuleDTO } from './dtos/create-module.dto';
 import { FindModulesQuery } from './dtos/find-modules-query.dto';
 import { ListModuleResponse } from './dtos/list-modules-response.dto';
@@ -20,28 +20,29 @@ export class ModulesService {
     @Inject('MODULE_REPOSITORY')
     private modulesRepository: Repository<Module>,
 
-    @Inject('StorageProvider')
-    private storageProvider: StorageProvider,
-  ) {}
+    @Inject(forwardRef(() => TrailsService))
+    private trailsService: TrailsService,
+  ) { }
 
-  async create({ title, order, icon }: CreateModuleDTO): Promise<Module> {
+  async create({ title, order, trail }: CreateModuleDTO): Promise<Module> {
     const moduleInposition = await this.modulesRepository.findOne({
-      where: { order },
+      where: { order, trail: { id: trail } },
     });
 
     if (moduleInposition) {
-      if (upload.driver === 'disk') await this.storageProvider.deleteFile(icon);
       throw new BadRequestException(
         'Já existe um módulo nessa posição. Você precisa reordenar os módulos.',
       );
     }
 
-    const imageUrl = await this.storageProvider.saveFile(icon);
+    const trailExists = await this.trailsService.findById(trail);
+
+    if (!trailExists) throw new NotFoundException('A trilha selecionada não foi encontrada');
 
     const module = this.modulesRepository.create({
       title,
       order,
-      icon_url: imageUrl,
+      trail: trailExists
     });
 
     return await this.modulesRepository.save(module);
@@ -64,35 +65,7 @@ export class ModulesService {
       ...module,
       title,
     };
-  }
-
-  async updateIcon(id: string, icon: string): Promise<Module> {
-    if (icon === '')
-      throw new BadRequestException('Conteúdo enviado não é uma imagem.');
-
-    const module = await this.modulesRepository.findOne({ where: { id } });
-
-    if (!module) {
-      if (upload.driver === 'disk') await this.storageProvider.deleteFile(icon);
-      throw new NotFoundException('Módulo não encontrado.');
-    }
-
-    await this.storageProvider.deleteFile(module.icon_url);
-
-    const imageUrl = await this.storageProvider.saveFile(icon);
-
-    await this.modulesRepository.update(
-      { id },
-      {
-        icon_url: imageUrl,
-      },
-    );
-
-    return {
-      ...module,
-      icon_url: imageUrl,
-    };
-  }
+  };
 
   async reorder({ id, order }: ReorderModulesDTO): Promise<void> {
     const allModules = await this.find({});
@@ -106,7 +79,7 @@ export class ModulesService {
 
     if (!moduleExists)
       throw new BadRequestException(
-        'Um dos módulos especificados não existe. Verifique os dados novamente.',
+        'O módulo especificado não existe. Verifique os dados novamente.',
       );
 
     await this.modulesRepository.update(
@@ -182,6 +155,11 @@ export class ModulesService {
           'Número da página deve ser maior que zero.',
         );
 
+      if (count < 0)
+        throw new BadRequestException(
+          'Quantidade de itens deve ser maior que zero.',
+        );
+
       const skip = page * count;
       const [modules, total] = await this.modulesRepository.findAndCount({
         order: { order: 'ASC' },
@@ -216,8 +194,6 @@ export class ModulesService {
     });
 
     if (!deletedModule) throw new NotFoundException('Módulo não encontrado.');
-
-    await this.storageProvider.deleteFile(deletedModule.icon_url);
 
     await this.modulesRepository.delete(id);
 

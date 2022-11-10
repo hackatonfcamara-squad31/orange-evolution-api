@@ -6,4 +6,7 @@ export class CreateModuleRequestDTO {
 
   @IsNotEmpty({ message: 'Please inform the module position.' })
   order: number;
+
+  @IsNotEmpty({ message: 'Por favor, informe a trilha a qual o módulo pertence.' })
+  trail: string;
 }
