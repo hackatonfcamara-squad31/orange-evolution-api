@@ -1,5 +1,7 @@
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { randomUUID } from 'crypto';
+import { Completed } from '../content-completed/entities/completed.entity';
 import { User } from './entities/user.entity';
 import { UsersService } from './user.service';
 
@@ -15,6 +17,7 @@ describe('UsersService', () => {
       is_admin: true,
       created_at: new Date(),
       updated_at: new Date(),
+      completed: [new Completed()],
     },
     {
       id: randomUUID(),
@@ -24,6 +27,7 @@ describe('UsersService', () => {
       is_admin: false,
       created_at: new Date(),
       updated_at: new Date(),
+      completed: [new Completed()],
     },
   ];
 
@@ -63,8 +67,9 @@ describe('UsersService', () => {
 
     expect(await service.create(newUser)).toEqual({
       id: expect.any(String),
-      password: expect.any(String),
-      ...newUser,
+      name: newUser.name,
+      email: newUser.email,
+      is_admin: newUser.is_admin,
     });
 
     expect(mockUsersRepository.create).toHaveBeenCalledWith({
@@ -88,5 +93,24 @@ describe('UsersService', () => {
     expect(mockUsersRepository.findOne).toHaveBeenCalledWith({
       where: { email },
     });
+  });
+
+  it('should throw an error when not passing a uuid to findUserById', () => {
+    const id = 'asdf';
+    expect(service.findUserById(id)).rejects.toThrow(BadRequestException);
+  });
+
+  it("should throw an error when passing an id of a User that doesn't exists", async () => {
+    const id = randomUUID();
+    let user: User;
+    mockUsersRepository.findOne.mockReturnValue(user);
+    await expect(() => service.findUserById(id)).rejects.toThrow(
+      NotFoundException,
+    );
+  });
+
+  it('should return an user given an id', async () => {
+    mockUsersRepository.findOne.mockReturnValue(mockUsers[0]);
+    expect(await service.findUserById(mockUsers[0].id)).toEqual(mockUsers[0]);
   });
 });
