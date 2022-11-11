@@ -27,7 +27,7 @@ export class TrailsService {
 
     @Inject('StorageProvider')
     private storageProvider: StorageProvider,
-  ) {}
+  ) { }
 
   async create({ title, icon, modules }: CreateTrailDTO): Promise<Trail> {
     const imageUrl = await this.storageProvider.saveFile(icon);
@@ -149,26 +149,15 @@ export class TrailsService {
   ): Promise<TrailsDescriptionResponseDTO> {
     const trails: Trail[] = await this.find();
 
-    const count = await Promise.all(
-      trails.map(
-        async (trail) => await this.modulesService.count(trail.id, user),
-      ),
-    );
+    const countPromises = trails.map(async (trail, index) => {
+      const count = await this.modulesService.count(trail.id, user);
+      trails[index] = { ...trail, ...count }
+    });
 
-    const { total, completed } = count.reduce(
-      (acc, val) => {
-        return {
-          total: (acc.total += val.total),
-          completed: (acc.completed += val.completed),
-        };
-      },
-      { total: 0, completed: 0 },
-    );
+    await Promise.all(countPromises);
 
     const description: TrailsDescriptionResponseDTO = {
       trails,
-      total,
-      completed,
     };
 
     return description;
