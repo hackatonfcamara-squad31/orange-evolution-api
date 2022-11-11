@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { ApiBody } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../users/entities/user.entity';
@@ -9,7 +17,7 @@ import { Content } from './entities/content.entity';
 
 @Controller('content')
 export class ContentController {
-  constructor(private readonly contentService: ContentService) { }
+  constructor(private readonly contentService: ContentService) {}
 
   @Get()
   getContents(@CurrentUser() user: User): Promise<Content[]> {

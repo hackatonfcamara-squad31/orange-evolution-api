@@ -3,13 +3,16 @@ import {
   forwardRef,
   Inject,
   Injectable,
-  NotFoundException
+  NotFoundException,
 } from '@nestjs/common';
 import { MoreThan, Repository } from 'typeorm';
+import { ContentService } from '../content/content.service';
 import { TrailsService } from '../trails/trail.service';
+import { User } from '../users/entities/user.entity';
 import { CreateModuleDTO } from './dtos/create-module.dto';
 import { FindModulesQuery } from './dtos/find-modules-query.dto';
 import { ListModuleResponse } from './dtos/list-modules-response.dto';
+import { ModuleDescriptionResponseDTO } from './dtos/module-desciption-response.dto';
 import { ReorderModulesDTO } from './dtos/reorder-modules.dto';
 import { UpdateModuleDTO } from './dtos/update-module.dto';
 import { Module } from './entities/module.entity';
@@ -22,9 +25,17 @@ export class ModulesService {
 
     @Inject(forwardRef(() => TrailsService))
     private trailsService: TrailsService,
-  ) { }
 
-  async create({ title, description, order, trail }: CreateModuleDTO): Promise<Module> {
+    @Inject(forwardRef(() => ContentService))
+    private contentService: ContentService,
+  ) {}
+
+  async create({
+    title,
+    description,
+    order,
+    trail,
+  }: CreateModuleDTO): Promise<Module> {
     const moduleInposition = await this.modulesRepository.findOne({
       where: { order, trail: { id: trail } },
     });
@@ -37,13 +48,14 @@ export class ModulesService {
 
     const trailExists = await this.trailsService.findById(trail);
 
-    if (!trailExists) throw new NotFoundException('A trilha selecionada não foi encontrada');
+    if (!trailExists)
+      throw new NotFoundException('A trilha selecionada não foi encontrada');
 
     const module = this.modulesRepository.create({
       title,
       description,
       order,
-      trail: trailExists
+      trail: trailExists,
     });
 
     return await this.modulesRepository.save(module);
@@ -66,9 +78,9 @@ export class ModulesService {
     return {
       ...module,
       title,
-      description
+      description,
     };
-  };
+  }
 
   async reorder({ id, order }: ReorderModulesDTO): Promise<void> {
     const allModules = await this.find({});
@@ -214,5 +226,66 @@ export class ModulesService {
     });
 
     await Promise.all(moduleUpdatePromises);
+  }
+
+  async description(id: string, user: User) {
+    const module: Module = await this.modulesRepository.findOne({
+      where: { id },
+    });
+
+    if (!module) {
+      throw new NotFoundException('Módulo não encontrado.');
+    }
+
+    const contents = await this.contentService.listModuleContents(id);
+
+    const total = await this.contentService.count(id);
+    const completed = await this.contentService.countCompleted(id, user.id);
+
+    const description: ModuleDescriptionResponseDTO = {
+      module,
+      contents,
+      total,
+      completed,
+    };
+
+    return description;
+  }
+
+  async listModules(id: string): Promise<Module[]> {
+    const modules: Module[] = await this.modulesRepository.find({
+      where: { trail: { id } },
+    });
+    return modules;
+  }
+
+  async count(
+    id: string,
+    user: User,
+  ): Promise<{ completed: number; total: number }> {
+    const modules: Module[] = await this.listModules(id);
+
+    const count = await Promise.all(
+      modules.map(async (module) => {
+        const completed = await this.contentService.countCompleted(
+          module.id,
+          user.id,
+        );
+        const total = await this.contentService.count(module.id);
+        return { completed, total };
+      }),
+    );
+
+    const result = count.reduce(
+      (acc, val) => {
+        return {
+          completed: (acc.completed += val.completed),
+          total: (acc.total += val.total),
+        };
+      },
+      { completed: 0, total: 0 },
+    );
+
+    return result;
   }
 }

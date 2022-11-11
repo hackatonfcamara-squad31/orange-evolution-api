@@ -10,8 +10,12 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { IsPublic } from '../auth/decorators/is-public.decorator';
+import { User } from '../users/entities/user.entity';
 import { CreateTrailRequestDTO } from './dtos/create-trail-request.dto';
+import { TrailDescriptionResponseDTO } from './dtos/trail-description-response.dto';
+import { TrailsDescriptionResponseDTO } from './dtos/trails-description-response';
 import { UpdateTrailRequestDTO } from './dtos/update-trail-request.dto';
 import { Trail } from './entities/trail.entity';
 import { TrailsService } from './trail.service';
@@ -53,6 +57,12 @@ export class TrailsController {
   ): Promise<Trail> {
     return this.trailsService.update({ ...trailData, id });
   }
+  @Get('/description')
+  async findAllTrails(
+    @CurrentUser() user: User,
+  ): Promise<TrailsDescriptionResponseDTO> {
+    return this.trailsService.findTrailsDescription(user);
+  }
 
   @IsPublic()
   @Get(':id')
@@ -69,5 +79,13 @@ export class TrailsController {
   @Delete(':id')
   async delete(@Param('id') id: string) {
     return this.trailsService.delete(id);
+  }
+
+  @Get('/description/:id')
+  async getTrailDescription(
+    @Param('id') id: string,
+    @CurrentUser() user: User,
+  ): Promise<TrailDescriptionResponseDTO> {
+    return this.trailsService.description(id, user);
   }
 }

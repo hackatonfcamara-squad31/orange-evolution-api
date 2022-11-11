@@ -3,13 +3,16 @@ import {
   forwardRef,
   Inject,
   Injectable,
-  NotFoundException
+  NotFoundException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import upload from '../../config/upload';
 import { ModulesService } from '../modules/module.service';
 import StorageProvider from '../storage/storage-provider-model';
+import { User } from '../users/entities/user.entity';
 import { CreateTrailDTO } from './dtos/create-trail.dto';
+import { TrailDescriptionResponseDTO } from './dtos/trail-description-response.dto';
+import { TrailsDescriptionResponseDTO } from './dtos/trails-description-response';
 import { UpdateTrailDTO } from './dtos/update-trail.dto';
 import { Trail } from './entities/trail.entity';
 
@@ -24,7 +27,7 @@ export class TrailsService {
 
     @Inject('StorageProvider')
     private storageProvider: StorageProvider,
-  ) { }
+  ) {}
 
   async create({ title, icon, modules }: CreateTrailDTO): Promise<Trail> {
     const imageUrl = await this.storageProvider.saveFile(icon);
@@ -36,12 +39,12 @@ export class TrailsService {
 
     const trail = await this.trailsRepository.save(createdTrail);
 
-    if (modules.length > 0) {
+    if (modules?.length > 0) {
       const modulePromises = modules.map(async (module) => {
-        await this.modulesService.create({ ...module, trail: trail.id })
-      })
+        await this.modulesService.create({ ...module, trail: trail.id });
+      });
 
-      await Promise.all(modulePromises)
+      await Promise.all(modulePromises);
     }
 
     return trail;
@@ -95,7 +98,10 @@ export class TrailsService {
   }
 
   async findById(id: string): Promise<Trail> {
-    const trail = await this.trailsRepository.findOne({ where: { id }, relations: ['modules'] });
+    const trail = await this.trailsRepository.findOne({
+      where: { id },
+      relations: ['modules'],
+    });
 
     if (!trail) throw new NotFoundException('Trilha não encontrada.');
 
@@ -120,5 +126,51 @@ export class TrailsService {
     await this.storageProvider.deleteFile(deletedModule.icon_url);
 
     await this.trailsRepository.delete(id);
+  }
+
+  async description(
+    id: string,
+    user: User,
+  ): Promise<TrailDescriptionResponseDTO> {
+    const trail = await this.findById(id);
+
+    const { total, completed } = await this.modulesService.count(id, user);
+
+    const descriptionResponse: TrailDescriptionResponseDTO = {
+      trail,
+      total,
+      completed,
+    };
+    return descriptionResponse;
+  }
+
+  async findTrailsDescription(
+    user: User,
+  ): Promise<TrailsDescriptionResponseDTO> {
+    const trails: Trail[] = await this.find();
+
+    const count = await Promise.all(
+      trails.map(
+        async (trail) => await this.modulesService.count(trail.id, user),
+      ),
+    );
+
+    const { total, completed } = count.reduce(
+      (acc, val) => {
+        return {
+          total: (acc.total += val.total),
+          completed: (acc.completed += val.completed),
+        };
+      },
+      { total: 0, completed: 0 },
+    );
+
+    const description: TrailsDescriptionResponseDTO = {
+      trails,
+      total,
+      completed,
+    };
+
+    return description;
   }
 }

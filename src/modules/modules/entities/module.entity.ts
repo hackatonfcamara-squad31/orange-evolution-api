@@ -1,7 +1,14 @@
 import { Content } from 'src/modules/content/entities/content.entity';
 import { Trail } from 'src/modules/trails/entities/trail.entity';
 import {
-  Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity('modules')
@@ -19,7 +26,7 @@ export class Module {
   order: number;
 
   @ManyToOne(() => Trail, (trail) => trail.modules, {
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   trail: Trail;
 

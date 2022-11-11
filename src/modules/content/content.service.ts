@@ -22,9 +22,9 @@ export class ContentService {
     private contentRepository: Repository<Content>,
     @Inject('COMPLETED_REPOSITORY')
     private completedRepository: Repository<Completed>,
-    @Inject(ModulesService)
-    private modulesService: ModulesService
-  ) { }
+    @Inject(forwardRef(() => ModulesService))
+    private modulesService: ModulesService,
+  ) {}
 
   async findById(id: string): Promise<Content> {
     if (!validate(id)) {
@@ -56,9 +56,12 @@ export class ContentService {
   }
 
   async create(createContentDTO: CreateContentDTO): Promise<Content> {
-    const module = await this.modulesService.findById(createContentDTO.module_id)
+    const module = await this.modulesService.findById(
+      createContentDTO.module_id,
+    );
 
-    if (!module) throw new NotFoundException('O módulo selecionado não foi encontrado');
+    if (!module)
+      throw new NotFoundException('O módulo selecionado não foi encontrado');
 
     const content = this.contentRepository.create({
       ...createContentDTO,
@@ -72,9 +75,12 @@ export class ContentService {
     id: string,
     updateContentDTO: UpdateContentDTO,
   ): Promise<Content> {
-    const module = await this.modulesService.findById(updateContentDTO.module_id)
+    const module = await this.modulesService.findById(
+      updateContentDTO.module_id,
+    );
 
-    if (!module) throw new NotFoundException('O módulo selecionado não foi encontrado');
+    if (!module)
+      throw new NotFoundException('O módulo selecionado não foi encontrado');
 
     const content = await this.contentRepository.preload({
       id,
@@ -100,9 +106,35 @@ export class ContentService {
       .where('completed.user.id = :id', { id })
       .getRawMany();
 
-    const result = contents.map((completed) => completed.content.id);
+    const result = contents.map((completed) => completed['content_id']);
 
     return result;
+  }
+
+  async count(id: string): Promise<number> {
+    const count: number = await this.contentRepository
+      .createQueryBuilder('content')
+      .where('content.module.id = :id', { id })
+      .getCount();
+    return count;
+  }
+
+  async countCompleted(moduleId: string, userId: string): Promise<number> {
+    const count: number = await this.contentRepository
+      .createQueryBuilder('content')
+      .innerJoin('content.completed', 'completed')
+      .where('content.module.id = :moduleId', { moduleId })
+      .andWhere('completed.user.id = :userId', { userId })
+      .getCount();
+
+    return count;
+  }
+
+  async listModuleContents(id: string): Promise<Content[]> {
+    const contents: Content[] = await this.contentRepository.find({
+      where: { module: { id } },
+    });
+    return contents;
   }
 
   async delete(id: string): Promise<void> {
@@ -110,7 +142,8 @@ export class ContentService {
       where: { id },
     });
 
-    if (!deletedContent) throw new NotFoundException('Conteúdo não encontrado.');
+    if (!deletedContent)
+      throw new NotFoundException('Conteúdo não encontrado.');
 
     await this.contentRepository.delete(id);
   }
