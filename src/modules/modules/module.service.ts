@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { MoreThan, Repository } from 'typeorm';
 import { ContentService } from '../content/content.service';
+import { Trail } from '../trails/entities/trail.entity';
 import { TrailsService } from '../trails/trail.service';
 import { User } from '../users/entities/user.entity';
 import { CreateModuleDTO } from './dtos/create-module.dto';
@@ -228,7 +229,10 @@ export class ModulesService {
     await Promise.all(moduleUpdatePromises);
   }
 
-  async description(id: string, user: User) {
+  async description(
+    id: string,
+    user: User,
+  ): Promise<ModuleDescriptionResponseDTO> {
     const module: Module = await this.modulesRepository.findOne({
       where: { id },
     });
@@ -237,12 +241,14 @@ export class ModulesService {
       throw new NotFoundException('Módulo não encontrado.');
     }
 
+    const trail: Trail = await this.trailsService.findByModuleId(id);
     const contents = await this.contentService.listModuleContents(id);
-
     const total = await this.contentService.count(id);
     const completed = await this.contentService.countCompleted(id, user.id);
 
     const description: ModuleDescriptionResponseDTO = {
+      trail_id: trail.id,
+      trail_title: trail.title,
       module,
       contents,
       total,

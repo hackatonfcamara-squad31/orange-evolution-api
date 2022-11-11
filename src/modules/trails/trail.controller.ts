@@ -62,7 +62,7 @@ export class TrailsController {
   ): Promise<Trail> {
     return this.trailsService.update({ ...trailData, id });
   }
-  
+
   @ApiBearerAuth()
   @Get('/description')
   async findAllTrails(
