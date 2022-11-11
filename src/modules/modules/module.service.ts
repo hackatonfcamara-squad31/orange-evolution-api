@@ -13,6 +13,7 @@ import { User } from '../users/entities/user.entity';
 import { CreateModuleDTO } from './dtos/create-module.dto';
 import { FindModulesQuery } from './dtos/find-modules-query.dto';
 import { ListModuleResponse } from './dtos/list-modules-response.dto';
+import { ModuleDescriptionResponseDTO } from './dtos/module-desciption-response.dto';
 import { ReorderModulesDTO } from './dtos/reorder-modules.dto';
 import { UpdateModuleDTO } from './dtos/update-module.dto';
 import { Module } from './entities/module.entity';
@@ -238,13 +239,12 @@ export class ModulesService {
     }
 
     const content_count = await this.contentService.count(id);
-
     const content_completed_count = await this.contentService.countCompleted(
       id,
       user.id,
     );
 
-    const description = {
+    const description: ModuleDescriptionResponseDTO = {
       module,
       content_count,
       content_completed_count,

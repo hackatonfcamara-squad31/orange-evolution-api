@@ -130,6 +130,13 @@ export class ContentService {
     return count;
   }
 
+  async listModuleContents(id: string): Promise<Content[]> {
+    const contents: Content[] = await this.contentRepository.find({
+      where: { module: { id } },
+    });
+    return contents;
+  }
+
   async delete(id: string): Promise<void> {
     const deletedContent = await this.contentRepository.findOne({
       where: { id },

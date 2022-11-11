@@ -1,6 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { ApiBody } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { IsPublic } from '../auth/decorators/is-public.decorator';
 import { User } from '../users/entities/user.entity';
 import { ContentService } from './content.service';
 import { CreateContentDTO } from './dto/create-content.dto';
@@ -9,7 +18,7 @@ import { Content } from './entities/content.entity';
 
 @Controller('content')
 export class ContentController {
-  constructor(private readonly contentService: ContentService) { }
+  constructor(private readonly contentService: ContentService) {}
 
   @Get()
   getContents(@CurrentUser() user: User): Promise<Content[]> {
@@ -19,6 +28,12 @@ export class ContentController {
   @Get(':id')
   async getContentById(@Param('id') id: string): Promise<Content> {
     return this.contentService.findById(id);
+  }
+
+  @IsPublic()
+  @Get('/list/:id')
+  async getListContents(@Param('id') id: string): Promise<Content[]> {
+    return this.contentService.listModuleContents(id);
   }
 
   @Post()

@@ -15,6 +15,7 @@ import { User } from '../users/entities/user.entity';
 import { CreateModuleRequestDTO } from './dtos/create-module-request.dto';
 import { FindModulesQuery } from './dtos/find-modules-query.dto';
 import { ListModuleResponse } from './dtos/list-modules-response.dto';
+import { ModuleDescriptionResponseDTO } from './dtos/module-desciption-response.dto';
 import { ReorderModulesDTO } from './dtos/reorder-modules.dto';
 import { UpdateModuleRequestDTO } from './dtos/update-module-request.dto';
 import { Module } from './entities/module.entity';
@@ -50,7 +51,7 @@ export class ModulesController {
   async getModuleDescription(
     @Param('id') id: string,
     @CurrentUser() user: User,
-  ) {
+  ): Promise<ModuleDescriptionResponseDTO> {
     return this.modulesService.description(id, user);
   }
 
