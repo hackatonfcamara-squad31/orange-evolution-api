@@ -4,7 +4,7 @@ import { IsOptional } from 'class-validator';
 export class UpdateContentDTO {
   @ApiProperty()
   @IsOptional()
-  module_id?: number;
+  module_id?: string;
 
   @ApiProperty()
   @IsOptional()
