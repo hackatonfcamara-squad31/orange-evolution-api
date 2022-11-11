@@ -1,12 +1,12 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsOptional } from "class-validator";
 
 export class FindModulesQuery {
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   count?: number;
   
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   page?: number;
 }

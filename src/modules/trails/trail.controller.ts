@@ -10,6 +10,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { IsPublic } from '../auth/decorators/is-public.decorator';
 import { User } from '../users/entities/user.entity';
@@ -20,10 +21,12 @@ import { UpdateTrailRequestDTO } from './dtos/update-trail-request.dto';
 import { Trail } from './entities/trail.entity';
 import { TrailsService } from './trail.service';
 
+@ApiTags('trails')
 @Controller('trails')
 export class TrailsController {
   constructor(private trailsService: TrailsService) {}
 
+  @ApiBearerAuth()
   @Post()
   @UseInterceptors(FileInterceptor('icon'))
   async create(
@@ -37,6 +40,7 @@ export class TrailsController {
     return this.trailsService.create({ ...trailData, icon: iconFilename });
   }
 
+  @ApiBearerAuth()
   @Put('icon/:id')
   @UseInterceptors(FileInterceptor('icon'))
   async updateIcon(
@@ -50,6 +54,7 @@ export class TrailsController {
     return this.trailsService.updateIcon(id, iconFilename);
   }
 
+  @ApiBearerAuth()
   @Put(':id')
   async update(
     @Param('id') id: string,
@@ -57,6 +62,8 @@ export class TrailsController {
   ): Promise<Trail> {
     return this.trailsService.update({ ...trailData, id });
   }
+  
+  @ApiBearerAuth()
   @Get('/description')
   async findAllTrails(
     @CurrentUser() user: User,
@@ -76,11 +83,13 @@ export class TrailsController {
     return this.trailsService.find();
   }
 
+  @ApiBearerAuth()
   @Delete(':id')
   async delete(@Param('id') id: string) {
     return this.trailsService.delete(id);
   }
 
+  @ApiBearerAuth()
   @Get('/description/:id')
   async getTrailDescription(
     @Param('id') id: string,

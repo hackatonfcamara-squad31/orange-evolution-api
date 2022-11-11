@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class UpdateModuleRequestDTO {
@@ -6,7 +6,7 @@ export class UpdateModuleRequestDTO {
   @IsNotEmpty({ message: 'Por favor, informe o título do módulo.' })
   title: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   description?: string;
 }
