@@ -16,7 +16,7 @@ export class Content {
   id: string;
 
   @ManyToOne(() => Module, (module) => module.contents, {
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   module: Module;
 
@@ -42,7 +42,7 @@ export class Content {
   updated_at: Date;
 
   @OneToOne(() => Completed, (completed) => completed.content, {
-    cascade: true
+    cascade: true,
   })
   completed: Completed;
 }

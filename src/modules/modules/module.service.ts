@@ -3,10 +3,13 @@ import {
   forwardRef,
   Inject,
   Injectable,
-  NotFoundException
+  NotFoundException,
 } from '@nestjs/common';
 import { MoreThan, Repository } from 'typeorm';
+import { ContentService } from '../content/content.service';
+import { Content } from '../content/entities/content.entity';
 import { TrailsService } from '../trails/trail.service';
+import { User } from '../users/entities/user.entity';
 import { CreateModuleDTO } from './dtos/create-module.dto';
 import { FindModulesQuery } from './dtos/find-modules-query.dto';
 import { ListModuleResponse } from './dtos/list-modules-response.dto';
@@ -22,9 +25,17 @@ export class ModulesService {
 
     @Inject(forwardRef(() => TrailsService))
     private trailsService: TrailsService,
-  ) { }
 
-  async create({ title, description, order, trail }: CreateModuleDTO): Promise<Module> {
+    @Inject(forwardRef(() => ContentService))
+    private contentService: ContentService,
+  ) {}
+
+  async create({
+    title,
+    description,
+    order,
+    trail,
+  }: CreateModuleDTO): Promise<Module> {
     const moduleInposition = await this.modulesRepository.findOne({
       where: { order, trail: { id: trail } },
     });
@@ -37,13 +48,14 @@ export class ModulesService {
 
     const trailExists = await this.trailsService.findById(trail);
 
-    if (!trailExists) throw new NotFoundException('A trilha selecionada não foi encontrada');
+    if (!trailExists)
+      throw new NotFoundException('A trilha selecionada não foi encontrada');
 
     const module = this.modulesRepository.create({
       title,
       description,
       order,
-      trail: trailExists
+      trail: trailExists,
     });
 
     return await this.modulesRepository.save(module);
@@ -66,9 +78,9 @@ export class ModulesService {
     return {
       ...module,
       title,
-      description
+      description,
     };
-  };
+  }
 
   async reorder({ id, order }: ReorderModulesDTO): Promise<void> {
     const allModules = await this.find({});
@@ -214,5 +226,30 @@ export class ModulesService {
     });
 
     await Promise.all(moduleUpdatePromises);
+  }
+
+  async description(id: string, user: User) {
+    const module: Module = await this.modulesRepository.findOne({
+      where: { id },
+    });
+
+    if (!module) {
+      throw new NotFoundException('Módulo não encontrado.');
+    }
+
+    const content_count = await this.contentService.count(id);
+
+    const content_completed_count = await this.contentService.countCompleted(
+      id,
+      user.id,
+    );
+
+    const description = {
+      module,
+      content_count,
+      content_completed_count,
+    };
+
+    return description;
   }
 }

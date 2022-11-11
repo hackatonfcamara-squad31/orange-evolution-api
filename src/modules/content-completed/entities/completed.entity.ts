@@ -22,7 +22,7 @@ export class Completed {
   created_at: Date;
 
   @OneToOne(() => Content, (content) => content.completed, {
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'content_id' })
   content: Content;

@@ -5,7 +5,7 @@ export class ReorderModulesDTO {
   @ApiProperty()
   @IsUUID()
   id: string;
-  
+
   @ApiProperty()
   @IsNumber({}, { message: 'Por favor, informe a posição do módulo.' })
   order: number;

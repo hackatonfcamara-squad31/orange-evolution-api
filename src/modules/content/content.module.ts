@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { completedProvider } from '../content-completed/completed.provider';
 import { DatabaseModule } from '../database/database.module';
 import { ModulesModule } from '../modules/module.module';
@@ -8,9 +8,9 @@ import { contentProvider } from './content.provider';
 import { ContentService } from './content.service';
 
 @Module({
-  imports: [DatabaseModule, UserModule, ModulesModule],
+  imports: [DatabaseModule, UserModule, forwardRef(() => ModulesModule)],
   providers: [...contentProvider, ContentService, ...completedProvider],
   controllers: [ContentController],
   exports: [ContentService],
 })
-export class ContentModule { }
+export class ContentModule {}

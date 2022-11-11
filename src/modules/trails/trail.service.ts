@@ -3,7 +3,7 @@ import {
   forwardRef,
   Inject,
   Injectable,
-  NotFoundException
+  NotFoundException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import upload from '../../config/upload';
@@ -24,7 +24,7 @@ export class TrailsService {
 
     @Inject('StorageProvider')
     private storageProvider: StorageProvider,
-  ) { }
+  ) {}
 
   async create({ title, icon, modules }: CreateTrailDTO): Promise<Trail> {
     const imageUrl = await this.storageProvider.saveFile(icon);
@@ -36,12 +36,12 @@ export class TrailsService {
 
     const trail = await this.trailsRepository.save(createdTrail);
 
-    if (modules.length > 0) {
+    if (modules) {
       const modulePromises = modules.map(async (module) => {
-        await this.modulesService.create({ ...module, trail: trail.id })
-      })
+        await this.modulesService.create({ ...module, trail: trail.id });
+      });
 
-      await Promise.all(modulePromises)
+      await Promise.all(modulePromises);
     }
 
     return trail;
@@ -95,7 +95,10 @@ export class TrailsService {
   }
 
   async findById(id: string): Promise<Trail> {
-    const trail = await this.trailsRepository.findOne({ where: { id }, relations: ['modules'] });
+    const trail = await this.trailsRepository.findOne({
+      where: { id },
+      relations: ['modules'],
+    });
 
     if (!trail) throw new NotFoundException('Trilha não encontrada.');
 

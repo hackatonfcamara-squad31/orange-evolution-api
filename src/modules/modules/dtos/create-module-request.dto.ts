@@ -5,7 +5,7 @@ export class CreateModuleRequestDTO {
   @ApiProperty()
   @IsNotEmpty({ message: 'Por favor, informe o título do módulo.' })
   title: string;
-  
+
   @IsOptional()
   description?: string;
 
@@ -13,6 +13,8 @@ export class CreateModuleRequestDTO {
   @IsNumber({}, { message: 'Por favor, informe a posição do módulo.' })
   order: number;
 
-  @IsNotEmpty({ message: 'Por favor, informe a trilha a qual o módulo pertence.' })
+  @IsNotEmpty({
+    message: 'Por favor, informe a trilha a qual o módulo pertence.',
+  })
   trail: string;
 }
