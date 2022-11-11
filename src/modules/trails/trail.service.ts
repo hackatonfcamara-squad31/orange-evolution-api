@@ -9,7 +9,9 @@ import { Repository } from 'typeorm';
 import upload from '../../config/upload';
 import { ModulesService } from '../modules/module.service';
 import StorageProvider from '../storage/storage-provider-model';
+import { User } from '../users/entities/user.entity';
 import { CreateTrailDTO } from './dtos/create-trail.dto';
+import { TrailDescriptionResponseDTO } from './dtos/trail-description-response.dto';
 import { UpdateTrailDTO } from './dtos/update-trail.dto';
 import { Trail } from './entities/trail.entity';
 
@@ -36,7 +38,7 @@ export class TrailsService {
 
     const trail = await this.trailsRepository.save(createdTrail);
 
-    if (modules) {
+    if (modules?.length > 0) {
       const modulePromises = modules.map(async (module) => {
         await this.modulesService.create({ ...module, trail: trail.id });
       });
@@ -123,5 +125,21 @@ export class TrailsService {
     await this.storageProvider.deleteFile(deletedModule.icon_url);
 
     await this.trailsRepository.delete(id);
+  }
+
+  async description(
+    id: string,
+    user: User,
+  ): Promise<TrailDescriptionResponseDTO> {
+    const trail = await this.findById(id);
+
+    const { total, completed } = await this.modulesService.count(id, user);
+
+    const descriptionResponse: TrailDescriptionResponseDTO = {
+      trail,
+      total,
+      completed,
+    };
+    return descriptionResponse;
   }
 }

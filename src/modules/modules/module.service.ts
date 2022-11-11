@@ -259,18 +259,33 @@ export class ModulesService {
     return modules;
   }
 
-  async countCompleted(
+  async count(
     id: string,
     user: User,
   ): Promise<{ completed: number; total: number }> {
     const modules: Module[] = await this.listModules(id);
-    let completed: number;
-    let total: number;
-    modules.forEach(async (module) => {
-      completed += await this.contentService.countCompleted(module.id, user.id);
-      total += await this.contentService.count(module.id);
-    });
 
-    return { completed, total };
+    const count = await Promise.all(
+      modules.map(async (module) => {
+        const completed = await this.contentService.countCompleted(
+          module.id,
+          user.id,
+        );
+        const total = await this.contentService.count(module.id);
+        return { completed, total };
+      }),
+    );
+
+    const result = count.reduce(
+      (acc, val) => {
+        return {
+          completed: (acc.completed += val.completed),
+          total: (acc.total += val.total),
+        };
+      },
+      { completed: 0, total: 0 },
+    );
+
+    return result;
   }
 }

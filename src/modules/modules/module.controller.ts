@@ -67,12 +67,6 @@ export class ModulesController {
     return this.modulesService.find({ count: query.count, page: query.page });
   }
 
-  @IsPublic()
-  @Get('/list/:id')
-  async listModules(@Param('id') id: string): Promise<Module[]> {
-    return this.modulesService.listModules(id);
-  }
-
   @Delete(':id')
   @ApiBearerAuth()
   async delete(@Param('id') id: string) {

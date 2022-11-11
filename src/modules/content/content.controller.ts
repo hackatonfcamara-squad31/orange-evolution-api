@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { ApiBody } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { IsPublic } from '../auth/decorators/is-public.decorator';
 import { User } from '../users/entities/user.entity';
 import { ContentService } from './content.service';
 import { CreateContentDTO } from './dto/create-content.dto';
@@ -28,12 +27,6 @@ export class ContentController {
   @Get(':id')
   async getContentById(@Param('id') id: string): Promise<Content> {
     return this.contentService.findById(id);
-  }
-
-  @IsPublic()
-  @Get('/list/:id')
-  async getListContents(@Param('id') id: string): Promise<Content[]> {
-    return this.contentService.listModuleContents(id);
   }
 
   @Post()
