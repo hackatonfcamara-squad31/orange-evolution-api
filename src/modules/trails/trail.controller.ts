@@ -15,6 +15,7 @@ import { IsPublic } from '../auth/decorators/is-public.decorator';
 import { User } from '../users/entities/user.entity';
 import { CreateTrailRequestDTO } from './dtos/create-trail-request.dto';
 import { TrailDescriptionResponseDTO } from './dtos/trail-description-response.dto';
+import { TrailsDescriptionResponseDTO } from './dtos/trails-description-response';
 import { UpdateTrailRequestDTO } from './dtos/update-trail-request.dto';
 import { Trail } from './entities/trail.entity';
 import { TrailsService } from './trail.service';
@@ -55,6 +56,12 @@ export class TrailsController {
     @Body() trailData: UpdateTrailRequestDTO,
   ): Promise<Trail> {
     return this.trailsService.update({ ...trailData, id });
+  }
+  @Get('/description')
+  async findAllTrails(
+    @CurrentUser() user: User,
+  ): Promise<TrailsDescriptionResponseDTO> {
+    return this.trailsService.findTrailsDescription(user);
   }
 
   @IsPublic()

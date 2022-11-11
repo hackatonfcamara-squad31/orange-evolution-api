@@ -12,6 +12,7 @@ import StorageProvider from '../storage/storage-provider-model';
 import { User } from '../users/entities/user.entity';
 import { CreateTrailDTO } from './dtos/create-trail.dto';
 import { TrailDescriptionResponseDTO } from './dtos/trail-description-response.dto';
+import { TrailsDescriptionResponseDTO } from './dtos/trails-description-response';
 import { UpdateTrailDTO } from './dtos/update-trail.dto';
 import { Trail } from './entities/trail.entity';
 
@@ -141,5 +142,35 @@ export class TrailsService {
       completed,
     };
     return descriptionResponse;
+  }
+
+  async findTrailsDescription(
+    user: User,
+  ): Promise<TrailsDescriptionResponseDTO> {
+    const trails: Trail[] = await this.find();
+
+    const count = await Promise.all(
+      trails.map(
+        async (trail) => await this.modulesService.count(trail.id, user),
+      ),
+    );
+
+    const { total, completed } = count.reduce(
+      (acc, val) => {
+        return {
+          total: (acc.total += val.total),
+          completed: (acc.completed += val.completed),
+        };
+      },
+      { total: 0, completed: 0 },
+    );
+
+    const description: TrailsDescriptionResponseDTO = {
+      trails,
+      total,
+      completed,
+    };
+
+    return description;
   }
 }
