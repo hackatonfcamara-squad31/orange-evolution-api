@@ -1,28 +1,28 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional } from 'class-validator';
 
 export class UpdateContentDTO {
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   module_id?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   title?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   type?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   creator_name?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   duration?: number;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   link?: string;
 }

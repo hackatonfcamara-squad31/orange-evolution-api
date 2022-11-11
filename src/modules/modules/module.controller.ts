@@ -6,9 +6,9 @@ import {
   Param,
   Post,
   Put,
-  Query,
+  Query
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { IsPublic } from '../auth/decorators/is-public.decorator';
 import { User } from '../users/entities/user.entity';
@@ -21,9 +21,10 @@ import { UpdateModuleRequestDTO } from './dtos/update-module-request.dto';
 import { Module } from './entities/module.entity';
 import { ModulesService } from './module.service';
 
+@ApiTags('modules')
 @Controller('modules')
 export class ModulesController {
-  constructor(private modulesService: ModulesService) {}
+  constructor(private modulesService: ModulesService) { }
 
   @Post()
   @ApiBearerAuth()
