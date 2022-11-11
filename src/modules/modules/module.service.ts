@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { MoreThan, Repository } from 'typeorm';
 import { ContentService } from '../content/content.service';
-import { Content } from '../content/entities/content.entity';
 import { TrailsService } from '../trails/trail.service';
 import { User } from '../users/entities/user.entity';
 import { CreateModuleDTO } from './dtos/create-module.dto';
@@ -238,18 +237,40 @@ export class ModulesService {
       throw new NotFoundException('Módulo não encontrado.');
     }
 
-    const content_count = await this.contentService.count(id);
-    const content_completed_count = await this.contentService.countCompleted(
-      id,
-      user.id,
-    );
+    const contents = await this.contentService.listModuleContents(id);
+
+    const total = await this.contentService.count(id);
+    const completed = await this.contentService.countCompleted(id, user.id);
 
     const description: ModuleDescriptionResponseDTO = {
       module,
-      content_count,
-      content_completed_count,
+      contents,
+      total,
+      completed,
     };
 
     return description;
+  }
+
+  async listModules(id: string): Promise<Module[]> {
+    const modules: Module[] = await this.modulesRepository.find({
+      where: { trail: { id } },
+    });
+    return modules;
+  }
+
+  async countCompleted(
+    id: string,
+    user: User,
+  ): Promise<{ completed: number; total: number }> {
+    const modules: Module[] = await this.listModules(id);
+    let completed: number;
+    let total: number;
+    modules.forEach(async (module) => {
+      completed += await this.contentService.countCompleted(module.id, user.id);
+      total += await this.contentService.count(module.id);
+    });
+
+    return { completed, total };
   }
 }

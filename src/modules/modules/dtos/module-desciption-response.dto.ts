@@ -1,7 +1,9 @@
+import { Content } from 'src/modules/content/entities/content.entity';
 import { Module } from '../entities/module.entity';
 
 export class ModuleDescriptionResponseDTO {
   module: Module;
-  content_count: number;
-  content_completed_count: number;
+  contents: Content[];
+  total: number;
+  completed: number;
 }
