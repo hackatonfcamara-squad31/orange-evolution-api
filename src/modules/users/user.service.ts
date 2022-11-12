@@ -15,7 +15,7 @@ export class UsersService {
   constructor(
     @Inject('USER_REPOSITORY')
     private usersRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async create({
     name,
@@ -52,6 +52,7 @@ export class UsersService {
         .select('user.id')
         .addSelect('user.name')
         .addSelect('user.email')
+        .addSelect('user.is_admin')
         .addSelect('user.password')
         .where('user.email = :email', { email: email })
         .getOne();
