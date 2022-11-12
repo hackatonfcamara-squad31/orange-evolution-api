@@ -27,7 +27,7 @@ export class TrailsService {
 
     @Inject('StorageProvider')
     private storageProvider: StorageProvider,
-  ) { }
+  ) {}
 
   async create({ title, icon, modules }: CreateTrailDTO): Promise<Trail> {
     const imageUrl = await this.storageProvider.saveFile(icon);
@@ -151,7 +151,7 @@ export class TrailsService {
 
     const countPromises = trails.map(async (trail, index) => {
       const count = await this.modulesService.count(trail.id, user);
-      trails[index] = { ...trail, ...count }
+      trails[index] = { ...trail, ...count };
     });
 
     await Promise.all(countPromises);
@@ -161,5 +161,17 @@ export class TrailsService {
     };
 
     return description;
+  }
+
+  async findByModuleId(id: string): Promise<Trail> {
+    const trail: Trail = await this.trailsRepository.findOne({
+      where: { modules: { id } },
+    });
+
+    if (!trail) {
+      throw new NotFoundException('Trilha não encontrada.');
+    }
+
+    return trail;
   }
 }
