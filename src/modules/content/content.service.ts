@@ -130,11 +130,24 @@ export class ContentService {
     return count;
   }
 
-  async listModuleContents(id: string): Promise<Content[]> {
+  async listModuleContents(
+    id: string,
+    user: User,
+  ): Promise<ResponseContentDTO[]> {
     const contents: Content[] = await this.contentRepository.find({
       where: { module: { id } },
     });
-    return contents;
+
+    const completedContents = await this.getCompletedContents(user.id);
+
+    const response: ResponseContentDTO[] = contents.map((content) => {
+      return {
+        ...content,
+        is_completed: completedContents.includes(content.id),
+      };
+    });
+
+    return response;
   }
 
   async delete(id: string): Promise<void> {
