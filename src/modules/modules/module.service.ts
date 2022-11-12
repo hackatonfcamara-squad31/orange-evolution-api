@@ -242,7 +242,7 @@ export class ModulesService {
     }
 
     const trail: Trail = await this.trailsService.findByModuleId(id);
-    const contents = await this.contentService.listModuleContents(id);
+    const contents = await this.contentService.listModuleContents(id, user);
     const total = await this.contentService.count(id);
     const completed = await this.contentService.countCompleted(id, user.id);
 

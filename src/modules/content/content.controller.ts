@@ -26,7 +26,7 @@ export class ContentController {
   getContents(@CurrentUser() user: User): Promise<Content[]> {
     return this.contentService.findAll(user);
   }
-  
+
   @IsPublic()
   @Get(':id')
   async getContentById(@Param('id') id: string): Promise<Content> {
