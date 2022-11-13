@@ -7,10 +7,12 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { IsPublic } from '../auth/decorators/is-public.decorator';
+import { IsAdminGuard } from '../auth/guards/is-admin.guard';
 import { User } from '../users/entities/user.entity';
 import { CreateModuleRequestDTO } from './dtos/create-module-request.dto';
 import { FindModulesQuery } from './dtos/find-modules-query.dto';
@@ -28,12 +30,14 @@ export class ModulesController {
 
   @Post()
   @ApiBearerAuth()
+  @UseGuards(IsAdminGuard)
   @ApiBody({ type: CreateModuleRequestDTO })
   async create(@Body() moduleData: CreateModuleRequestDTO): Promise<Module> {
     return this.modulesService.create(moduleData);
   }
 
   @Put('/reorder')
+  @UseGuards(IsAdminGuard)
   @ApiBearerAuth()
   async reorder(@Body() modules: ReorderModulesDTO) {
     return this.modulesService.reorder(modules);
@@ -41,6 +45,7 @@ export class ModulesController {
 
   @Put(':id')
   @ApiBearerAuth()
+  @UseGuards(IsAdminGuard)
   async update(
     @Param('id') id: string,
     @Body() moduleData: UpdateModuleRequestDTO,
@@ -49,6 +54,7 @@ export class ModulesController {
   }
 
   @Get('/description/:id')
+  @ApiBearerAuth()
   async getModuleDescription(
     @Param('id') id: string,
     @CurrentUser() user: User,
@@ -69,6 +75,7 @@ export class ModulesController {
   }
 
   @Delete(':id')
+  @UseGuards(IsAdminGuard)
   @ApiBearerAuth()
   async delete(@Param('id') id: string) {
     return this.modulesService.delete(id);

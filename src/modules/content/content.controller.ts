@@ -6,10 +6,12 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { IsPublic } from '../auth/decorators/is-public.decorator';
+import { IsAdminGuard } from '../auth/guards/is-admin.guard';
 import { User } from '../users/entities/user.entity';
 import { ContentService } from './content.service';
 import { CreateContentDTO } from './dto/create-content.dto';
@@ -21,8 +23,9 @@ import { Content } from './entities/content.entity';
 export class ContentController {
   constructor(private readonly contentService: ContentService) {}
 
-  @IsPublic()
   @Get()
+  @IsPublic()
+  @ApiBearerAuth()
   getContents(@CurrentUser() user: User): Promise<Content[]> {
     return this.contentService.findAll(user);
   }
@@ -34,6 +37,7 @@ export class ContentController {
   }
 
   @ApiBearerAuth()
+  @UseGuards(IsAdminGuard)
   @Post()
   async createContent(
     @Body() createContentDTO: CreateContentDTO,
@@ -42,6 +46,7 @@ export class ContentController {
   }
 
   @ApiBearerAuth()
+  @UseGuards(IsAdminGuard)
   @Patch(':id')
   @ApiBody({ type: UpdateContentDTO })
   async update(
@@ -52,6 +57,7 @@ export class ContentController {
   }
 
   @ApiBearerAuth()
+  @UseGuards(IsAdminGuard)
   @Delete(':id')
   async delete(@Param('id') id: string) {
     return this.contentService.delete(id);

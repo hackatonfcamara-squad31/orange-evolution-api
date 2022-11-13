@@ -15,7 +15,7 @@ export class UsersService {
   constructor(
     @Inject('USER_REPOSITORY')
     private usersRepository: Repository<User>,
-  ) { }
+  ) {}
 
   async create({
     name,

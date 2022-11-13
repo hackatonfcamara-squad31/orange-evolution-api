@@ -16,7 +16,7 @@ import { LoginRequestDTO } from './dtos/LoginRequestDTO';
 @ApiTags('auth')
 @Controller()
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @IsPublic()
   @UseGuards(LocalAuthGuard)

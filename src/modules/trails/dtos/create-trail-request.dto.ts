@@ -6,7 +6,7 @@ export class CreateTrailRequestDTO {
   @ApiProperty()
   @IsNotEmpty({ message: 'Por favor, informe o nome da trilha.' })
   title: string;
-  
+
   @ApiPropertyOptional()
   @IsOptional()
   modules?: CreateModuleRequestDTO[];

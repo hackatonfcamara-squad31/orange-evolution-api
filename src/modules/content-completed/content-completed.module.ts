@@ -22,4 +22,4 @@ import { ContentCompletedService } from './content-completed.service';
   ],
   exports: [ContentCompletedService],
 })
-export class ContentCompletedModule { }
+export class ContentCompletedModule {}
