@@ -6,11 +6,10 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { IsPublic } from '../auth/decorators/is-public.decorator';
 import { IsAdminGuard } from '../auth/guards/is-admin.guard';
 import { User } from '../users/entities/user.entity';
 import { ContentService } from './content.service';
@@ -21,19 +20,18 @@ import { Content } from './entities/content.entity';
 @ApiTags('contents')
 @Controller('content')
 export class ContentController {
-  constructor(private readonly contentService: ContentService) {}
+  constructor(private readonly contentService: ContentService) { }
 
   @Get()
-  @IsPublic()
   @ApiBearerAuth()
   getContents(@CurrentUser() user: User): Promise<Content[]> {
     return this.contentService.findAll(user);
   }
 
-  @IsPublic()
+  @ApiBearerAuth()
   @Get(':id')
-  async getContentById(@Param('id') id: string): Promise<Content> {
-    return this.contentService.findById(id);
+  async getContentById(@CurrentUser() user: User, @Param('id') id: string): Promise<Content> {
+    return this.contentService.findById(id, user);
   }
 
   @ApiBearerAuth()

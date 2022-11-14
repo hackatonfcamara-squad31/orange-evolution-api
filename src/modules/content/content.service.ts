@@ -24,9 +24,9 @@ export class ContentService {
     private completedRepository: Repository<Completed>,
     @Inject(forwardRef(() => ModulesService))
     private modulesService: ModulesService,
-  ) {}
+  ) { }
 
-  async findById(id: string): Promise<Content> {
+  async findById(id: string, user?: User): Promise<Content> {
     if (!validate(id)) {
       throw new BadRequestException('Informe um ID válido.');
     }
@@ -39,7 +39,24 @@ export class ContentService {
       throw new NotFoundException(`Conteúdo com ID ${id} não encontrado`);
     }
 
-    return content;
+    const completed: Completed = await this.completedRepository
+      .createQueryBuilder('completed')
+      .where('completed.user.id = :id', { id: user.id })
+      .where('completed.content.id = :id', { id: content.id })
+      .getOne();
+
+    const contentResponse = {
+      ...content,
+      is_completed: false,
+    }
+
+    delete contentResponse.completed;
+
+    if (completed) {
+      contentResponse.is_completed = true;
+    }
+
+    return contentResponse;
   }
 
   async findAll(user: User): Promise<ResponseContentDTO[]> {
