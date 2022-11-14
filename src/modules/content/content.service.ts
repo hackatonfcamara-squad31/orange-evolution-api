@@ -181,7 +181,7 @@ export class ContentService {
     return response;
   }
 
-  async delete(id: string, module_id: string): Promise<void> {
+  async delete(id: string): Promise<void> {
     const deletedContent = await this.contentRepository.findOne({
       where: { id },
     });
@@ -194,7 +194,7 @@ export class ContentService {
     const allContents = await this.contentRepository.find({
       where: {
         order: MoreThan(deletedContent.order),
-        module: { id: module_id },
+        module: { id: deletedContent.module.id },
       },
       order: { order: 'ASC' },
     });

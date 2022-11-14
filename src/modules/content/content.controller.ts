@@ -39,7 +39,7 @@ export class ContentController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(IsAdminGuard)
+  // @UseGuards(IsAdminGuard)
   @Post()
   async createContent(
     @Body() createContentDTO: CreateContentDTO,
@@ -66,9 +66,9 @@ export class ContentController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(IsAdminGuard)
-  @Delete(':module/:id')
-  async delete(@Param('id') id: string, @Param('module') module_id: string) {
-    return this.contentService.delete(id, module_id);
+  // @UseGuards(IsAdminGuard)
+  @Delete(':id')
+  async delete(@Param('id') id: string) {
+    return this.contentService.delete(id);
   }
 }

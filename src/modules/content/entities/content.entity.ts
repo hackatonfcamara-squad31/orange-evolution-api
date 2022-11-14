@@ -17,6 +17,7 @@ export class Content {
 
   @ManyToOne(() => Module, (module) => module.contents, {
     onDelete: 'CASCADE',
+    eager: true,
   })
   module: Module;
 
