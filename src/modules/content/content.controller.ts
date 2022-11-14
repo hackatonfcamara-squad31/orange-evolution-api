@@ -5,10 +5,12 @@ import {
   Get,
   Param,
   Patch,
-  Post
+  Post,
+  UseGuards
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { IsAdminGuard } from '../auth/guards/is-admin.guard';
 import { User } from '../users/entities/user.entity';
 import { ContentService } from './content.service';
 import { CreateContentDTO } from './dto/create-content.dto';
@@ -33,6 +35,7 @@ export class ContentController {
   }
 
   @ApiBearerAuth()
+  @UseGuards(IsAdminGuard)
   @Post()
   async createContent(
     @Body() createContentDTO: CreateContentDTO,
@@ -41,6 +44,7 @@ export class ContentController {
   }
 
   @ApiBearerAuth()
+  @UseGuards(IsAdminGuard)
   @Patch(':id')
   @ApiBody({ type: UpdateContentDTO })
   async update(
@@ -51,6 +55,7 @@ export class ContentController {
   }
 
   @ApiBearerAuth()
+  @UseGuards(IsAdminGuard)
   @Delete(':id')
   async delete(@Param('id') id: string) {
     return this.contentService.delete(id);
