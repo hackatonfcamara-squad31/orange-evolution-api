@@ -5,12 +5,13 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { validate } from 'uuid';
 import { Completed } from '../content-completed/entities/completed.entity';
 import { ModulesService } from '../modules/module.service';
 import { User } from '../users/entities/user.entity';
 import { CreateContentDTO } from './dto/create-content.dto';
+import { ReorderContentDTO } from './dto/reorder-content-dto';
 import { ResponseContentDTO } from './dto/response-content.dto';
 import { UpdateContentDTO } from './dto/update-content.dto';
 import { Content } from './entities/content.entity';
@@ -24,7 +25,7 @@ export class ContentService {
     private completedRepository: Repository<Completed>,
     @Inject(forwardRef(() => ModulesService))
     private modulesService: ModulesService,
-  ) { }
+  ) {}
 
   async findById(id: string, user?: User): Promise<Content> {
     if (!validate(id)) {
@@ -34,6 +35,8 @@ export class ContentService {
     const content = await this.contentRepository.findOne({
       where: { id },
     });
+
+    console.log(content);
 
     if (!content) {
       throw new NotFoundException(`Conteúdo com ID ${id} não encontrado`);
@@ -48,7 +51,7 @@ export class ContentService {
     const contentResponse = {
       ...content,
       is_completed: false,
-    }
+    };
 
     delete contentResponse.completed;
 
@@ -73,6 +76,19 @@ export class ContentService {
   }
 
   async create(createContentDTO: CreateContentDTO): Promise<Content> {
+    const contentExists = await this.contentRepository.findOne({
+      where: {
+        order: createContentDTO.order,
+        module: { id: createContentDTO.module_id },
+      },
+    });
+
+    if (contentExists) {
+      throw new BadRequestException(
+        'Já existe um onteúdo nessa posição. Você precisa reordenar os conteúdos.',
+      );
+    }
+
     const module = await this.modulesService.findById(
       createContentDTO.module_id,
     );
@@ -167,7 +183,7 @@ export class ContentService {
     return response;
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string, module_id: string): Promise<void> {
     const deletedContent = await this.contentRepository.findOne({
       where: { id },
     });
@@ -176,5 +192,95 @@ export class ContentService {
       throw new NotFoundException('Conteúdo não encontrado.');
 
     await this.contentRepository.delete(id);
+
+    const allContents = await this.contentRepository.find({
+      where: {
+        order: MoreThan(deletedContent.order),
+        module: { id: module_id },
+      },
+      order: { order: 'ASC' },
+    });
+
+    const contentUpdatePromises = allContents.map(async (content, index) => {
+      const position = deletedContent.order + index;
+      await this.contentRepository.update(
+        { id: content.id },
+        { ...content, order: position },
+      );
+    });
+
+    await Promise.all(contentUpdatePromises);
+  }
+
+  async reorder({ id, order, module_id }: ReorderContentDTO) {
+    const allContents = await this.contentRepository.find({
+      where: { module: { id: module_id } },
+    });
+
+    const contentExists = allContents.filter((content) => content.id === id)[0];
+    const contentReplaced = allContents.filter((content) => content.order)[0];
+
+    if (!contentExists) {
+      throw new BadRequestException(
+        'O conteúdo especificado não existe. Verifique os dados novamente.',
+      );
+    }
+
+    await this.contentRepository.update(
+      { id: contentExists.id },
+      { ...contentExists, order: null },
+    );
+
+    await this.contentRepository.update(
+      { id: contentReplaced.id },
+      { ...contentReplaced, order: null },
+    );
+
+    if (contentExists.order < order) {
+      const afterContents = allContents.filter(
+        (content) =>
+          content.order > contentExists.order && content.order <= order,
+      );
+
+      const afterContentsPromises = afterContents.map(async (afterContent) => {
+        await this.contentRepository.update(
+          { id: afterContent.id },
+          { ...afterContent, order: afterContent.order - 1 },
+        );
+      });
+
+      await this.contentRepository.update(
+        { id: contentExists.id },
+        { ...contentExists, order: order },
+      );
+
+      await Promise.all(afterContentsPromises);
+    } else {
+      const beforeContents = allContents.filter(
+        (content) =>
+          content.order < contentExists.order && content.order > order,
+      );
+
+      const beforeContentsPromises = beforeContents
+        .reverse()
+        .map(async (beforeContent) => {
+          await this.contentRepository.update(
+            { id: beforeContent.id },
+            { ...beforeContent, order: beforeContent.order + 1 },
+          );
+        });
+
+      await this.contentRepository.update(
+        { id: contentExists.id },
+        { ...contentExists, order: order },
+      );
+
+      await this.contentRepository.update(
+        { id: contentReplaced.id },
+        { ...contentReplaced, order: order + 1 },
+      );
+
+      await Promise.all(beforeContentsPromises);
+    }
   }
 }

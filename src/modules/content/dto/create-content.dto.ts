@@ -28,6 +28,10 @@ export class CreateContentDTO {
   duration: number;
 
   @ApiProperty()
+  @IsNotEmpty({ message: 'Por favor, informe a posição do conteúdo' })
+  order: number;
+
+  @ApiProperty()
   @IsNotEmpty({ message: 'Por favor, informe o link do conteúdo' })
   link: string;
 }

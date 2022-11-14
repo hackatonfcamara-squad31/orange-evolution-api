@@ -29,7 +29,7 @@ export class ModulesService {
 
     @Inject(forwardRef(() => ContentService))
     private contentService: ContentService,
-  ) { }
+  ) {}
 
   async create({
     title,
@@ -84,11 +84,11 @@ export class ModulesService {
   }
 
   async reorder({ id, order, trail_id }: ReorderModulesDTO): Promise<void> {
-    const allModules = await this.modulesRepository.find({ where: { trail: { id: trail_id } } })
+    const allModules = await this.modulesRepository.find({
+      where: { trail: { id: trail_id } },
+    });
 
-    const moduleExists = allModules.filter(
-      (module) => module.id === id,
-    )[0];
+    const moduleExists = allModules.filter((module) => module.id === id)[0];
     const moduleReplaced = allModules.filter(
       (module) => module.order === order,
     )[0];
