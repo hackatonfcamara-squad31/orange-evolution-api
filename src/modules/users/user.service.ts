@@ -5,9 +5,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { hash } from 'bcrypt';
+import upload from 'src/config/upload';
 import { Repository } from 'typeorm';
 import { validate } from 'uuid';
+import StorageProvider from '../storage/storage-provider-model';
 import { CreateUserDTO } from './dtos/create-user.dto';
+import { UpdateUserDTO } from './dtos/update-user.dto';
 import { User } from './entities/user.entity';
 
 @Injectable()
@@ -15,6 +18,9 @@ export class UsersService {
   constructor(
     @Inject('USER_REPOSITORY')
     private usersRepository: Repository<User>,
+
+    @Inject('StorageProvider')
+    private storageProvider: StorageProvider,
   ) {}
 
   async create({
@@ -75,5 +81,64 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  async updateAvatar(id: string, avatar: string): Promise<User> {
+    if (avatar === '')
+      throw new BadRequestException('Conteúdo enviado não é uma imagem.');
+
+    const user = await this.findUserById(id);
+
+    if (!user) {
+      if (upload.driver === 'disk')
+        await this.storageProvider.deleteFile(avatar);
+      throw new NotFoundException('Trilha não encontrada.');
+    }
+
+    if (user.avatar) await this.storageProvider.deleteFile(user.avatar);
+
+    const imageUrl = await this.storageProvider.saveFile(avatar);
+
+    await this.usersRepository.update(
+      { id },
+      {
+        avatar: imageUrl,
+      },
+    );
+
+    return {
+      ...user,
+      avatar: imageUrl,
+    };
+  }
+
+  async update(userData: UpdateUserDTO): Promise<User> {
+    if (userData.email) {
+      const userExists = await this.findUserByEmail(userData.email);
+
+      if (userData.email === userExists.email)
+        throw new BadRequestException('Esse já é o seu email.');
+
+      if (userExists) throw new BadRequestException('Email já cadastrado.');
+    }
+
+    const user = await this.findUserById(userData.id);
+
+    await this.usersRepository.update({ id: user.id }, userData);
+
+    return {
+      ...user,
+      ...userData,
+    };
+  }
+
+  async delete(id: string): Promise<void> {
+    const userExists = await this.findUserByEmail(id);
+
+    if (!userExists) throw new BadRequestException('Usuário não encontrado');
+
+    await this.storageProvider.deleteFile(userExists.avatar);
+
+    await this.usersRepository.delete(id);
   }
 }
