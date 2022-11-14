@@ -4,10 +4,14 @@ import { AppService } from './app.service';
 import { CurrentUser } from './modules/auth/decorators/current-user.decorator';
 import { IsPublic } from './modules/auth/decorators/is-public.decorator';
 import { User } from './modules/users/entities/user.entity';
+import { UsersService } from './modules/users/user.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private readonly userService: UsersService,
+  ) {}
 
   @ApiTags('api')
   @IsPublic()
@@ -19,7 +23,7 @@ export class AppController {
   @ApiTags('users')
   @Get('me')
   @ApiBearerAuth()
-  getMe(@CurrentUser() user: User): User {
-    return user;
+  getMe(@CurrentUser() user: User): Promise<User> {
+    return this.userService.findUserById(user.id);
   }
 }
