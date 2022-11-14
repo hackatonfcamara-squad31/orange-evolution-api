@@ -24,7 +24,7 @@ import { ModulesService } from './module.service';
 @ApiTags('modules')
 @Controller('modules')
 export class ModulesController {
-  constructor(private modulesService: ModulesService) {}
+  constructor(private modulesService: ModulesService) { }
 
   @Post()
   @ApiBearerAuth()
@@ -68,9 +68,9 @@ export class ModulesController {
     return this.modulesService.find({ count: query.count, page: query.page });
   }
 
-  @Delete(':id')
+  @Delete('/:trail/:id')
   @ApiBearerAuth()
-  async delete(@Param('id') id: string) {
-    return this.modulesService.delete(id);
+  async delete(@Param('id') id: string, @Param('trail') trail: string) {
+    return this.modulesService.delete(id, trail);
   }
 }
