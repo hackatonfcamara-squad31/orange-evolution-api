@@ -12,6 +12,8 @@ export class CloudinaryStorageProvider {
   }
 
   public async saveFile(file: string): Promise<string> {
+    if (file === '') return '';
+
     const originalPath = resolve(upload.tmpFolder, file);
 
     const ContentType = getType(originalPath);
@@ -46,6 +48,8 @@ export class CloudinaryStorageProvider {
   }
 
   public async deleteFile(file: string): Promise<void> {
+    if (file === '') return;
+
     const deleteImage = new Promise((resolve, reject) => {
       const filePath = file.split('/');
       const filePublicId = filePath[filePath.length - 1].split('.')[0];
