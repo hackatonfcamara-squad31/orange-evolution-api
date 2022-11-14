@@ -20,6 +20,7 @@ export class AuthService {
       email: user.email,
       name: user.name,
       is_admin: user.is_admin,
+      avatar: user.avatar,
     };
 
     return {

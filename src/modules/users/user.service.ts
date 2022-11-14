@@ -62,6 +62,7 @@ export class UsersService {
         .addSelect('user.name')
         .addSelect('user.email')
         .addSelect('user.is_admin')
+        .addSelect('user.avatar')
         .addSelect('user.password')
         .where('user.email = :email', { email: email })
         .getOne();
@@ -146,6 +147,7 @@ export class UsersService {
     return {
       ...user,
       ...userData,
+      password: '',
     };
   }
 
