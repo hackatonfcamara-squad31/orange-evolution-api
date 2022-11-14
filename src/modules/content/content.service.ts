@@ -36,8 +36,6 @@ export class ContentService {
       where: { id },
     });
 
-    console.log(content);
-
     if (!content) {
       throw new NotFoundException(`Conteúdo com ID ${id} não encontrado`);
     }

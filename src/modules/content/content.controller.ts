@@ -39,7 +39,7 @@ export class ContentController {
   }
 
   @ApiBearerAuth()
-  // @UseGuards(IsAdminGuard)
+  @UseGuards(IsAdminGuard)
   @Post()
   async createContent(
     @Body() createContentDTO: CreateContentDTO,
