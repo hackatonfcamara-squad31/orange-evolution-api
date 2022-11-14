@@ -24,7 +24,7 @@ export class ContentService {
     private completedRepository: Repository<Completed>,
     @Inject(forwardRef(() => ModulesService))
     private modulesService: ModulesService,
-  ) { }
+  ) {}
 
   async findById(id: string, user?: User): Promise<Content> {
     if (!validate(id)) {
@@ -48,7 +48,7 @@ export class ContentService {
     const contentResponse = {
       ...content,
       is_completed: false,
-    }
+    };
 
     delete contentResponse.completed;
 

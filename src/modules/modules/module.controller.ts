@@ -26,7 +26,7 @@ import { ModulesService } from './module.service';
 @ApiTags('modules')
 @Controller('modules')
 export class ModulesController {
-  constructor(private modulesService: ModulesService) { }
+  constructor(private modulesService: ModulesService) {}
 
   @Post()
   @ApiBearerAuth()
