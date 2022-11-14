@@ -6,7 +6,7 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
@@ -20,7 +20,7 @@ import { Content } from './entities/content.entity';
 @ApiTags('contents')
 @Controller('content')
 export class ContentController {
-  constructor(private readonly contentService: ContentService) { }
+  constructor(private readonly contentService: ContentService) {}
 
   @Get()
   @ApiBearerAuth()
@@ -30,7 +30,10 @@ export class ContentController {
 
   @ApiBearerAuth()
   @Get(':id')
-  async getContentById(@CurrentUser() user: User, @Param('id') id: string): Promise<Content> {
+  async getContentById(
+    @CurrentUser() user: User,
+    @Param('id') id: string,
+  ): Promise<Content> {
     return this.contentService.findById(id, user);
   }
 

@@ -32,10 +32,11 @@ export class ContentCompletedService {
       throw new BadRequestException('Status de conteúdo já foi registrado');
     }
 
-    const content = await this.contentService.findById(content_id);
     const user = await this.userService.findUserById(
       createCompletedDto.user_id,
     );
+
+    const content = await this.contentService.findById(content_id, user);
 
     const completed = { ...createCompletedDto, content, user };
 

@@ -18,6 +18,6 @@ export class IsAdminGuard implements CanActivate {
         'Você não tem permissão para acessar esse recurso.',
       );
 
-    return;
+    return true;
   }
 }
