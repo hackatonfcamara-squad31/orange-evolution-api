@@ -204,7 +204,7 @@ export class ModulesService {
     return { modules };
   }
 
-  async delete(id: string, trail_id: string): Promise<void> {
+  async delete(id: string): Promise<void> {
     const deletedModule = await this.modulesRepository.findOne({
       where: { id },
     });
@@ -214,7 +214,7 @@ export class ModulesService {
     await this.modulesRepository.delete(id);
 
     const allModules = await this.modulesRepository.find({
-      where: { order: MoreThan(deletedModule.order), trail: { id: trail_id } },
+      where: { order: MoreThan(deletedModule.order), trail: { id: deletedModule.trail.id } },
       order: { order: 'ASC' },
     });
 
