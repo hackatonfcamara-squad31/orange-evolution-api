@@ -29,7 +29,7 @@ export class ModulesService {
 
     @Inject(forwardRef(() => ContentService))
     private contentService: ContentService,
-  ) {}
+  ) { }
 
   async create({
     title,
@@ -83,13 +83,13 @@ export class ModulesService {
     };
   }
 
-  async reorder({ id, order }: ReorderModulesDTO): Promise<void> {
-    const allModules = await this.find({});
+  async reorder({ id, order, trail_id }: ReorderModulesDTO): Promise<void> {
+    const allModules = await this.modulesRepository.find({ where: { trail: { id: trail_id } } })
 
-    const moduleExists = allModules.modules.filter(
+    const moduleExists = allModules.filter(
       (module) => module.id === id,
     )[0];
-    const moduleReplaced = allModules.modules.filter(
+    const moduleReplaced = allModules.filter(
       (module) => module.order === order,
     )[0];
 
@@ -109,7 +109,7 @@ export class ModulesService {
     );
 
     if (moduleExists.order < order) {
-      const afterModules = allModules.modules.filter(
+      const afterModules = allModules.filter(
         (module) => module.order > moduleExists.order && module.order <= order,
       );
 
@@ -127,7 +127,7 @@ export class ModulesService {
 
       await Promise.all(afterModulesPromises);
     } else {
-      const beforeModules = allModules.modules.filter(
+      const beforeModules = allModules.filter(
         (module) => module.order < moduleExists.order && module.order > order,
       );
 
@@ -204,7 +204,7 @@ export class ModulesService {
     return { modules };
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string, trail_id: string): Promise<void> {
     const deletedModule = await this.modulesRepository.findOne({
       where: { id },
     });
@@ -214,7 +214,7 @@ export class ModulesService {
     await this.modulesRepository.delete(id);
 
     const allModules = await this.modulesRepository.find({
-      where: { order: MoreThan(deletedModule.order) },
+      where: { order: MoreThan(deletedModule.order), trail: { id: trail_id } },
       order: { order: 'ASC' },
     });
 
