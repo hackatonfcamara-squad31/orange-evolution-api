@@ -39,7 +39,7 @@ export class ContentController {
   }
 
   @ApiBearerAuth()
-  // @UseGuards(IsAdminGuard)
+  @UseGuards(IsAdminGuard)
   @Post()
   async createContent(
     @Body() createContentDTO: CreateContentDTO,
@@ -48,8 +48,9 @@ export class ContentController {
   }
 
   @ApiBearerAuth()
-  // @UseGuards(IsAdminGuard)
+  @UseGuards(IsAdminGuard)
   @Post('/reorder')
+  @ApiBody({ type: ReorderContentDTO })
   async reorder(@Body() reorderDto: ReorderContentDTO) {
     return this.contentService.reorder(reorderDto);
   }
@@ -57,7 +58,6 @@ export class ContentController {
   @ApiBearerAuth()
   @UseGuards(IsAdminGuard)
   @Patch(':id')
-  @ApiBody({ type: UpdateContentDTO })
   async update(
     @Param('id') id: string,
     @Body() updateContent: UpdateContentDTO,
@@ -66,7 +66,7 @@ export class ContentController {
   }
 
   @ApiBearerAuth()
-  // @UseGuards(IsAdminGuard)
+  @UseGuards(IsAdminGuard)
   @Delete(':id')
   async delete(@Param('id') id: string) {
     return this.contentService.delete(id);
