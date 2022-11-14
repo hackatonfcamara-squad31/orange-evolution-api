@@ -12,4 +12,4 @@ import { TrailsService } from './trail.service';
   controllers: [TrailsController],
   exports: [TrailsService],
 })
-export class TrailsModule { }
+export class TrailsModule {}

@@ -7,12 +7,14 @@ import {
   Post,
   Put,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { IsPublic } from '../auth/decorators/is-public.decorator';
+import { IsAdminGuard } from '../auth/guards/is-admin.guard';
 import { User } from '../users/entities/user.entity';
 import { CreateTrailRequestDTO } from './dtos/create-trail-request.dto';
 import { TrailDescriptionResponseDTO } from './dtos/trail-description-response.dto';
@@ -26,8 +28,9 @@ import { TrailsService } from './trail.service';
 export class TrailsController {
   constructor(private trailsService: TrailsService) {}
 
-  @ApiBearerAuth()
   @Post()
+  @UseGuards(IsAdminGuard)
+  @ApiBearerAuth()
   @UseInterceptors(FileInterceptor('icon'))
   async create(
     @Body() trailData: CreateTrailRequestDTO,
@@ -40,8 +43,9 @@ export class TrailsController {
     return this.trailsService.create({ ...trailData, icon: iconFilename });
   }
 
-  @ApiBearerAuth()
   @Put('icon/:id')
+  @ApiBearerAuth()
+  @UseGuards(IsAdminGuard)
   @UseInterceptors(FileInterceptor('icon'))
   async updateIcon(
     @Param('id') id: string,
@@ -54,8 +58,9 @@ export class TrailsController {
     return this.trailsService.updateIcon(id, iconFilename);
   }
 
-  @ApiBearerAuth()
   @Put(':id')
+  @UseGuards(IsAdminGuard)
+  @ApiBearerAuth()
   async update(
     @Param('id') id: string,
     @Body() trailData: UpdateTrailRequestDTO,
@@ -83,8 +88,9 @@ export class TrailsController {
     return this.trailsService.find();
   }
 
-  @ApiBearerAuth()
   @Delete(':id')
+  @ApiBearerAuth()
+  @UseGuards(IsAdminGuard)
   async delete(@Param('id') id: string) {
     return this.trailsService.delete(id);
   }
