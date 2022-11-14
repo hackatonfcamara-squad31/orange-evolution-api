@@ -1,14 +1,14 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsEmail, IsNotEmpty, isNotEmpty, IsOptional } from 'class-validator';
 
 export class UpdateUserRequestDTO {
-  @ApiPropertyOptional()
-  @IsOptional()
-  name?: string;
+  @ApiProperty()
+  @IsNotEmpty({ message: 'Por favor, insira o seu nome.' })
+  name: string;
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  email?: string;
+  @ApiProperty()
+  @IsEmail({}, { message: 'Por favor, insira um email válido,' })
+  email: string;
 
   @ApiPropertyOptional()
   @IsOptional()
