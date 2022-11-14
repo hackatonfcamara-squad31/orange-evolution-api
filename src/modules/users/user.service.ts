@@ -21,7 +21,7 @@ export class UsersService {
 
     @Inject('StorageProvider')
     private storageProvider: StorageProvider,
-  ) { }
+  ) {}
 
   async create({
     name,
@@ -33,7 +33,8 @@ export class UsersService {
 
     if (userExists) throw new BadRequestException('Email já cadastrado.');
 
-    if (password.length < 6) throw new BadRequestException('Senha deve ter no mínimo 6 caracteres.')
+    if (password.length < 6)
+      throw new BadRequestException('Senha deve ter no mínimo 6 caracteres.');
 
     const passwordHash = await hash(password, 8);
 
@@ -120,7 +121,8 @@ export class UsersService {
         where: { email: userData.email },
       });
 
-      if (userExists && userExists.id !== userData.id) throw new BadRequestException('Email já cadastrado.');
+      if (userExists && userExists.id !== userData.id)
+        throw new BadRequestException('Email já cadastrado.');
     }
 
     const user = await this.findUserById(userData.id);
@@ -128,7 +130,8 @@ export class UsersService {
     let passwordHash = '';
 
     if (userData.password) {
-      if (userData.password.length < 6) throw new BadRequestException('Senha deve ter no mínimo 6 caracteres.')
+      if (userData.password.length < 6)
+        throw new BadRequestException('Senha deve ter no mínimo 6 caracteres.');
       passwordHash = await hash(userData.password, 8);
     }
 

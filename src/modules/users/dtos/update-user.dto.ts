@@ -1,4 +1,10 @@
-import { IsEmail, IsNotEmpty, isNotEmpty, IsString, IsUUID } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  isNotEmpty,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export class UpdateUserDTO {
   @IsUUID()
