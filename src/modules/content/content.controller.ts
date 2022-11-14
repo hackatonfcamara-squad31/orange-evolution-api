@@ -14,6 +14,7 @@ import { IsAdminGuard } from '../auth/guards/is-admin.guard';
 import { User } from '../users/entities/user.entity';
 import { ContentService } from './content.service';
 import { CreateContentDTO } from './dto/create-content.dto';
+import { ReorderContentDTO } from './dto/reorder-content-dto';
 import { UpdateContentDTO } from './dto/update-content.dto';
 import { Content } from './entities/content.entity';
 
@@ -38,12 +39,19 @@ export class ContentController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(IsAdminGuard)
+  // @UseGuards(IsAdminGuard)
   @Post()
   async createContent(
     @Body() createContentDTO: CreateContentDTO,
   ): Promise<Content> {
     return this.contentService.create(createContentDTO);
+  }
+
+  @ApiBearerAuth()
+  // @UseGuards(IsAdminGuard)
+  @Post('/reorder')
+  async reorder(@Body() reorderDto: ReorderContentDTO) {
+    return this.contentService.reorder(reorderDto);
   }
 
   @ApiBearerAuth()
@@ -58,7 +66,7 @@ export class ContentController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(IsAdminGuard)
+  // @UseGuards(IsAdminGuard)
   @Delete(':id')
   async delete(@Param('id') id: string) {
     return this.contentService.delete(id);

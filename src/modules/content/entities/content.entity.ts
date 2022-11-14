@@ -17,6 +17,7 @@ export class Content {
 
   @ManyToOne(() => Module, (module) => module.contents, {
     onDelete: 'CASCADE',
+    eager: true,
   })
   module: Module;
 
@@ -34,6 +35,9 @@ export class Content {
 
   @Column({ length: 1000 })
   link: string;
+
+  @Column({ nullable: true, unique: false })
+  order: number;
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
