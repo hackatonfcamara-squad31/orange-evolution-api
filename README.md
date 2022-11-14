@@ -64,11 +64,11 @@ O Orange Evolution consiste em trilhas totalmente gratuitas para que você possa
 
   
 
-- [Teste a api](https://feedbacks-api-zenbit.herokuapp.com)
+- [Teste a api](https://orange-evolution-api-production.up.railway.app)
 
-- [Teste o app](https://feedbacks-app-zenbit.herokuapp.com/)
+- [Teste o app](/)
 
-- [Documentação da api](https://feedbacks-api-zenbit.herokuapp.com/docs)
+- [Documentação da api](https://orange-evolution-api-production.up.railway.app/docs)
 
   
 
