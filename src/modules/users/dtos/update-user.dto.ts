@@ -1,12 +1,20 @@
-import { IsUUID } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  isNotEmpty,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export class UpdateUserDTO {
   @IsUUID()
   id: string;
 
-  name?: string;
+  @IsNotEmpty({ message: 'Por favor, insira o seu nome.' })
+  name: string;
 
-  email?: string;
+  @IsEmail({}, { message: 'Por favor, insira um email válido,' })
+  email: string;
 
   password?: string;
 

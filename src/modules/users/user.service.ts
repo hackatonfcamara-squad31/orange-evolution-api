@@ -33,6 +33,9 @@ export class UsersService {
 
     if (userExists) throw new BadRequestException('Email já cadastrado.');
 
+    if (password.length < 6)
+      throw new BadRequestException('Senha deve ter no mínimo 6 caracteres.');
+
     const passwordHash = await hash(password, 8);
 
     const createdUser = this.usersRepository.create({
@@ -114,17 +117,31 @@ export class UsersService {
 
   async update(userData: UpdateUserDTO): Promise<User> {
     if (userData.email) {
-      const userExists = await this.findUserByEmail(userData.email);
+      const userExists = await this.usersRepository.findOne({
+        where: { email: userData.email },
+      });
 
-      if (userData.email === userExists.email)
-        throw new BadRequestException('Esse já é o seu email.');
-
-      if (userExists) throw new BadRequestException('Email já cadastrado.');
+      if (userExists && userExists.id !== userData.id)
+        throw new BadRequestException('Email já cadastrado.');
     }
 
     const user = await this.findUserById(userData.id);
 
-    await this.usersRepository.update({ id: user.id }, userData);
+    let passwordHash = '';
+
+    if (userData.password) {
+      if (userData.password.length < 6)
+        throw new BadRequestException('Senha deve ter no mínimo 6 caracteres.');
+      passwordHash = await hash(userData.password, 8);
+    }
+
+    await this.usersRepository.update(
+      { id: user.id },
+      {
+        ...userData,
+        password: userData.password ? passwordHash : userData.password,
+      },
+    );
 
     return {
       ...user,
