@@ -77,7 +77,7 @@ export class ModulesController {
   @Delete('/:trail/:id')
   @UseGuards(IsAdminGuard)
   @ApiBearerAuth()
-  async delete(@Param('id') id: string, @Param('trail') trail: string) {
-    return this.modulesService.delete(id, trail);
+  async delete(@Param('id') id: string) {
+    return this.modulesService.delete(id);
   }
 }
