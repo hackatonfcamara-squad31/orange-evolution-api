@@ -116,6 +116,20 @@ export class UsersService {
     };
   }
 
+  async deleteAvatar(id: string): Promise<void> {
+    const user = await this.findUserById(id);
+
+    await this.storageProvider.deleteFile(user.avatar);
+
+    await this.usersRepository.update(
+      { id },
+      {
+        ...user,
+        avatar: '',
+      },
+    );
+  }
+
   async update(userData: UpdateUserDTO): Promise<User> {
     if (userData.email) {
       const userExists = await this.usersRepository.findOne({
@@ -152,9 +166,7 @@ export class UsersService {
   }
 
   async delete(id: string): Promise<void> {
-    const userExists = await this.findUserByEmail(id);
-
-    if (!userExists) throw new BadRequestException('Usuário não encontrado');
+    const userExists = await this.findUserById(id);
 
     await this.storageProvider.deleteFile(userExists.avatar);
 

@@ -51,6 +51,12 @@ export class UsersController {
     return this.usersService.updateAvatar(id, avatarFilename);
   }
 
+  @Delete('avatar/:id')
+  @ApiBearerAuth()
+  async deleteAvatar(@Param('id') id: string) {
+    return this.usersService.deleteAvatar(id);
+  }
+
   @Put(':id')
   @ApiBearerAuth()
   async update(
