@@ -1,5 +1,7 @@
 import { Body, Controller, Delete, Param, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { User } from '../users/entities/user.entity';
 import { ContentCompletedService } from './content-completed.service';
 import { CreateCompletedStatusDTO } from './dtos/create-completed-status.dto';
 import { Completed } from './entities/completed.entity';
@@ -21,7 +23,10 @@ export class ContentCompletedController {
 
   @ApiBearerAuth()
   @Delete(':id')
-  async deleteCompletedStatus(@Param('id') id: string) {
-    return this.contentCompletedService.deleteByContentId(id);
+  async deleteCompletedStatus(
+    @Param('id') id: string,
+    @CurrentUser() user: User,
+  ) {
+    return this.contentCompletedService.deleteByContentId(id, user);
   }
 }
