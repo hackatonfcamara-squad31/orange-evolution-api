@@ -2,8 +2,11 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { randomUUID } from 'crypto';
 import { Completed } from '../content-completed/entities/completed.entity';
+import { Module } from '../modules/entities/module.entity';
+import { Trail } from '../trails/entities/trail.entity';
 import { User } from '../users/entities/user.entity';
 import { ContentService } from './content.service';
+import { CreateContentDTO } from './dto/create-content.dto';
 import { UpdateContentDTO } from './dto/update-content.dto';
 import { Content } from './entities/content.entity';
 
@@ -21,15 +24,27 @@ describe('ContentService', () => {
     updated_at: new Date(),
   };
 
+  const mockModule: Module = {
+    contents: [new Content()],
+    created_at: new Date(),
+    updated_at: new Date(),
+    id: randomUUID(),
+    description: 'some description',
+    order: 1,
+    title: 'new module',
+    trail: new Trail(),
+  };
+
   const mockContent: Content[] = [
     {
-      id: '2ab06422-eb5f-4348-b6b6-7c1cd1ce9c15',
-      module_id: 5,
+      id: randomUUID(),
+      module: mockModule,
       creator_name: 'naruto',
       title: 'Learn Nest.js',
       link: 'www.youtube.com',
       type: 'video',
       duration: 86400,
+      order: 1,
       created_at: new Date(),
       updated_at: new Date(),
       completed: new Completed(),
@@ -111,12 +126,13 @@ describe('ContentService', () => {
   });
 
   it('should create a new content record and return that', async () => {
-    const newContent = {
-      module_id: 5,
+    const newContent: CreateContentDTO = {
+      module_id: mockModule.id,
       creator_name: 'naruto',
       title: 'Learn Nest.js',
       link: 'www.youtube.com',
       type: 'video',
+      order: 2,
       duration: 86400,
     };
 
@@ -160,7 +176,7 @@ describe('ContentService', () => {
       type: 'image',
     };
 
-    const updateDto: UpdateContentDTO = new UpdateContentDTO({ type: 'image' });
+    const updateDto: UpdateContentDTO = { type: 'image' };
 
     mockContentRepository.preload.mockReturnValue(updatedContent);
     mockContentRepository.save.mockReturnValue(updatedContent);
