@@ -5,7 +5,6 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -21,7 +20,7 @@ export class Completed {
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   created_at: Date;
 
-  @OneToOne(() => Content, (content) => content.completed, {
+  @ManyToOne(() => Content, (content) => content.completed, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'content_id' })
