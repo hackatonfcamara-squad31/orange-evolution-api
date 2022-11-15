@@ -207,6 +207,7 @@ export class ModulesService {
   async delete(id: string): Promise<void> {
     const deletedModule = await this.modulesRepository.findOne({
       where: { id },
+      relations: ['trail'],
     });
 
     if (!deletedModule) throw new NotFoundException('Módulo não encontrado.');

@@ -20,8 +20,8 @@ describe('ModulesController', () => {
         ...dto,
       };
     }),
-    reorder: jest.fn().mockImplementation(() => {}),
-    delete: jest.fn().mockImplementation(() => {}),
+    reorder: jest.fn().mockImplementation(),
+    delete: jest.fn().mockImplementation(),
   };
 
   beforeEach(async () => {

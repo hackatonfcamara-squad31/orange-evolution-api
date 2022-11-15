@@ -184,6 +184,7 @@ export class ContentService {
   async delete(id: string): Promise<void> {
     const deletedContent = await this.contentRepository.findOne({
       where: { id },
+      relations: ['module'],
     });
 
     if (!deletedContent)

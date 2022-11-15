@@ -27,6 +27,7 @@ describe('AuthController', () => {
   const mockAuthService = {
     login: jest.fn().mockImplementation((user: User) => {
       const payload: UserPayload = {
+        is_admin: true,
         sub: user.id,
         email: user.email,
         name: user.name,

@@ -1,6 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { randomUUID } from 'crypto';
+import { Content } from '../content/entities/content.entity';
 import { StorageModule } from '../storage/storage.module';
+import { Trail } from '../trails/entities/trail.entity';
+import { CreateModuleDTO } from './dtos/create-module.dto';
 import { Module } from './entities/module.entity';
 import { ModulesService } from './module.service';
 
@@ -20,7 +23,9 @@ describe('ModulesService', () => {
       id: randomUUID(),
       title: 'Programming Basics',
       order: 1,
-      icon_url: 'https://cdn.com/icon.jpeg',
+      contents: [new Content()],
+      description: 'some description',
+      trail: new Trail(),
       created_at: new Date(),
       updated_at: new Date(),
     },
@@ -28,7 +33,9 @@ describe('ModulesService', () => {
       id: randomUUID(),
       title: 'Programming Intermediate',
       order: 2,
-      icon_url: 'https://cdn.com/icon.jpeg',
+      contents: [new Content()],
+      description: 'some other description',
+      trail: new Trail(),
       created_at: new Date(),
       updated_at: new Date(),
     },
@@ -54,10 +61,11 @@ describe('ModulesService', () => {
   });
 
   it('should create a new module record and return that', async () => {
-    const newModule = {
+    const newModule: CreateModuleDTO = {
       title: 'Programming Intermediate',
       order: 1,
-      icon: 'icon.jpeg',
+      description: 'some blablabla',
+      trail: randomUUID(),
     };
 
     mockModulesRepository.save.mockReturnValue({
@@ -82,10 +90,11 @@ describe('ModulesService', () => {
   });
 
   it('should update an existing module', async () => {
-    const newModule = {
-      title: 'Programming Interte',
+    const newModule: CreateModuleDTO = {
+      title: 'Programming Intermediate',
       order: 1,
-      icon: 'icon.jpeg',
+      description: 'some blablabla',
+      trail: randomUUID(),
     };
 
     const createdModule = await service.create(newModule);
@@ -117,7 +126,11 @@ describe('ModulesService', () => {
   it('should reorder the modules based on user input', async () => {
     mockModulesRepository.find.mockReturnValue(mockModules);
 
-    await service.reorder({ id: mockModules[1].id, order: 1 });
+    await service.reorder({
+      id: mockModules[1].id,
+      order: 1,
+      trail_id: new Trail().id,
+    });
 
     expect(mockModulesRepository.update).toHaveBeenCalled();
   });

@@ -1,7 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { randomUUID } from 'crypto';
-import { ContentCompletedService } from '../content-completed/content-completed.service';
 import { Completed } from '../content-completed/entities/completed.entity';
+import { Module } from '../modules/entities/module.entity';
+import { Trail } from '../trails/entities/trail.entity';
 import { User } from '../users/entities/user.entity';
 import { ContentController } from './content.controller';
 import { ContentService } from './content.service';
@@ -11,15 +12,36 @@ import { Content } from './entities/content.entity';
 
 describe('ContentController', () => {
   let controller: ContentController;
+
+  const mockTrail: Trail = {
+    title: 'new trail title',
+    created_at: new Date(),
+    updated_at: new Date(),
+    id: randomUUID(),
+    icon_url: 'www.icon.com',
+    modules: [new Module()],
+  };
+
+  const mockModule: Module = {
+    contents: [new Content()],
+    created_at: new Date(),
+    updated_at: new Date(),
+    id: randomUUID(),
+    description: 'some description',
+    order: 1,
+    title: 'new module',
+    trail: mockTrail,
+  };
   const mockContent: Content[] = [
     {
       id: randomUUID(),
-      module_id: 5,
+      module: mockModule,
       creator_name: 'naruto',
       title: 'Learn Nest.js',
       link: 'www.youtube.com',
       type: 'video',
       duration: 86400,
+      order: 1,
       created_at: new Date(),
       updated_at: new Date(),
       completed: new Completed(),
@@ -62,7 +84,8 @@ describe('ContentController', () => {
 
   it('should create a new content', async () => {
     const content = await controller.createContent({
-      module_id: 5,
+      module_id: mockModule.id,
+      order: 2,
       creator_name: 'naruto',
       title: 'Learn Nest.js',
       link: 'www.youtube.com',
@@ -84,7 +107,10 @@ describe('ContentController', () => {
   });
 
   it('should return one content given an ID', async () => {
-    expect(await controller.getContentById('asdf')).toEqual(mockContent[0]);
+    const user = new User();
+    expect(await controller.getContentById(user, mockContent[0].id)).toEqual(
+      mockContent[0],
+    );
   });
 
   it('should return all contents', async () => {

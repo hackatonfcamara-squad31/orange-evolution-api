@@ -74,7 +74,7 @@ export class ModulesController {
     return this.modulesService.find({ count: query.count, page: query.page });
   }
 
-  @Delete('/:trail/:id')
+  @Delete('/:id')
   @UseGuards(IsAdminGuard)
   @ApiBearerAuth()
   async delete(@Param('id') id: string) {
