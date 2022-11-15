@@ -27,7 +27,6 @@ export class Module {
 
   @ManyToOne(() => Trail, (trail) => trail.modules, {
     onDelete: 'CASCADE',
-    eager: true,
   })
   trail: Trail;
 
