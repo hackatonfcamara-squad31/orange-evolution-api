@@ -7,6 +7,7 @@ import {
 import { Repository } from 'typeorm';
 import { validate } from 'uuid';
 import { ContentService } from '../content/content.service';
+import { User } from '../users/entities/user.entity';
 import { UsersService } from '../users/user.service';
 import { CreateCompletedStatusDTO } from './dtos/create-completed-status.dto';
 import { Completed } from './entities/completed.entity';
@@ -23,9 +24,9 @@ export class ContentCompletedService {
   async create(
     createCompletedDto: CreateCompletedStatusDTO,
   ): Promise<Completed> {
-    const { content_id } = createCompletedDto;
+    const { content_id, user_id } = createCompletedDto;
     const contentStatus = await this.completedRepository.findOne({
-      where: { content: { id: content_id } },
+      where: { content: { id: content_id }, user: { id: user_id } },
     });
 
     if (contentStatus) {
@@ -43,13 +44,13 @@ export class ContentCompletedService {
     return this.completedRepository.save(completed);
   }
 
-  async deleteByContentId(id: string) {
+  async deleteByContentId(id: string, user: User) {
     if (!validate(id)) {
       throw new BadRequestException('Informe um ID válido.');
     }
 
     const contentStatus = await this.completedRepository.findOne({
-      where: { content: { id } },
+      where: { content: { id }, user: { id: user.id } },
     });
 
     if (!contentStatus) {
