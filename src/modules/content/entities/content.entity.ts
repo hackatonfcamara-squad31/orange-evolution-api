@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -45,7 +46,7 @@ export class Content {
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date;
 
-  @OneToOne(() => Completed, (completed) => completed.content, {
+  @OneToMany(() => Completed, (completed) => completed.content, {
     cascade: true,
   })
   completed: Completed;
