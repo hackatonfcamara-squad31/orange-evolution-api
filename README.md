@@ -67,7 +67,10 @@ O Orange Evolution consiste em trilhas totalmente gratuitas para que você possa
 
 -  <img  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jest/jest-plain.svg"  alt="drawing"  width="15"/> Jest
 
-  
+
+## Banco de dados
+
+<img src="database.png" alt="database" width="600"/>
 
 ## Links
 
