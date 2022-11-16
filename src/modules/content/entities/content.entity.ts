@@ -1,5 +1,5 @@
-import { Completed } from 'src/modules/content-completed/entities/completed.entity';
-import { Module } from 'src/modules/modules/entities/module.entity';
+import { Completed } from '../../../modules/content-completed/entities/completed.entity';
+import { Module } from '../../../modules/modules/entities/module.entity';
 import {
   Column,
   CreateDateColumn,

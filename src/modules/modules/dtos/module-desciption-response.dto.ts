@@ -1,4 +1,4 @@
-import { ResponseContentDTO } from 'src/modules/content/dto/response-content.dto';
+import { ResponseContentDTO } from '../../../modules/content/dto/response-content.dto';
 import { Module } from '../entities/module.entity';
 
 export class ModuleDescriptionResponseDTO {

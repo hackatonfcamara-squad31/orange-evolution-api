@@ -1,5 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
-import { CreateModuleDTO } from 'src/modules/modules/dtos/create-module.dto';
+import { CreateModuleDTO } from '../../../modules/modules/dtos/create-module.dto';
 
 export class CreateTrailDTO {
   @IsNotEmpty({ message: 'Por favor, informe o nome da trilha.' })

@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional } from 'class-validator';
-import { CreateModuleRequestDTO } from 'src/modules/modules/dtos/create-module-request.dto';
+import { CreateModuleRequestDTO } from '../../../modules/modules/dtos/create-module-request.dto';
 
 export class CreateTrailRequestDTO {
   @ApiProperty()

@@ -43,6 +43,7 @@ describe('UsersController', () => {
     expect(user).toEqual({
       id: expect.any(String),
       name: 'John Doe',
+      avatar: expect.any(String),
       email: 'john@email.com',
       password: expect.any(String),
       is_admin: true,

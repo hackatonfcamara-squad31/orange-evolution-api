@@ -95,7 +95,8 @@ describe('ContentController', () => {
 
     expect(content).toEqual({
       id: expect.any(String),
-      module_id: 5,
+      module_id: expect.any(String),
+      order: 2,
       creator_name: 'naruto',
       title: 'Learn Nest.js',
       link: 'www.youtube.com',

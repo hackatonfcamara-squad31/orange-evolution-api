@@ -7,7 +7,6 @@ import { User } from '../users/entities/user.entity';
 import { UsersService } from '../users/user.service';
 import { AuthService } from './auth.service';
 import { UserPayload } from './dtos/UserPayload';
-import { Content } from 'src/modules/content/entities/content.entity';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -18,6 +17,7 @@ describe('AuthService', () => {
     name: 'John Doe',
     email: 'john@email.com',
     password: 'randomPassword123',
+    avatar: '',
     is_admin: true,
     created_at: new Date(),
     updated_at: new Date(),
@@ -46,6 +46,8 @@ describe('AuthService', () => {
         sub: user.id,
         email: user.email,
         name: user.name,
+        avatar: user.avatar,
+        is_admin: user.is_admin
       };
 
       return {

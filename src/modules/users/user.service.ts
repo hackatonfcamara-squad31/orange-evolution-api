@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { hash } from 'bcrypt';
-import upload from 'src/config/upload';
+import upload from '../../config/upload';
 import { Repository } from 'typeorm';
 import { validate } from 'uuid';
 import StorageProvider from '../storage/storage-provider-model';
@@ -21,7 +21,7 @@ export class UsersService {
 
     @Inject('StorageProvider')
     private storageProvider: StorageProvider,
-  ) {}
+  ) { }
 
   async create({
     name,

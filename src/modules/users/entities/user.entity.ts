@@ -1,4 +1,4 @@
-import { Completed } from 'src/modules/content-completed/entities/completed.entity';
+import { Completed } from '../../../modules/content-completed/entities/completed.entity';
 import {
   Entity,
   Column,

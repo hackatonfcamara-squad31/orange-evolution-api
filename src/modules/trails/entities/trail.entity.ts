@@ -1,4 +1,4 @@
-import { Module } from 'src/modules/modules/entities/module.entity';
+import { Module } from '../../../modules/modules/entities/module.entity';
 import {
   Entity,
   Column,
