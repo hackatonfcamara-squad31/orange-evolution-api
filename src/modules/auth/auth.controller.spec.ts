@@ -18,6 +18,7 @@ describe('AuthController', () => {
     name: 'John Doe',
     email: 'john@email.com',
     password: 'randomPassword123',
+    avatar: '',
     is_admin: true,
     created_at: new Date(),
     updated_at: new Date(),
@@ -27,10 +28,11 @@ describe('AuthController', () => {
   const mockAuthService = {
     login: jest.fn().mockImplementation((user: User) => {
       const payload: UserPayload = {
-        is_admin: true,
         sub: user.id,
         email: user.email,
         name: user.name,
+        avatar: user.avatar,
+        is_admin: user.is_admin
       };
 
       return {

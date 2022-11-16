@@ -1,5 +1,5 @@
-import { Content } from 'src/modules/content/entities/content.entity';
-import { Trail } from 'src/modules/trails/entities/trail.entity';
+import { Content } from '../../../modules/content/entities/content.entity';
+import { Trail } from '../../../modules/trails/entities/trail.entity';
 import {
   Column,
   CreateDateColumn,

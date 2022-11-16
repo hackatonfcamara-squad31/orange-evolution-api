@@ -2,6 +2,7 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { randomUUID } from 'crypto';
 import { Completed } from '../content-completed/entities/completed.entity';
+import { StorageModule } from '../storage/storage.module';
 import { User } from './entities/user.entity';
 import { UsersService } from './user.service';
 
@@ -14,6 +15,7 @@ describe('UsersService', () => {
       name: 'John Doe',
       email: 'john@email.com',
       password: 'randomPassword123',
+      avatar: '',
       is_admin: true,
       created_at: new Date(),
       updated_at: new Date(),
@@ -24,6 +26,7 @@ describe('UsersService', () => {
       name: 'Peter Parker',
       email: 'peter@email.com',
       password: 'thisIsMyPassword321',
+      avatar: '',
       is_admin: false,
       created_at: new Date(),
       updated_at: new Date(),
@@ -46,6 +49,7 @@ describe('UsersService', () => {
           useValue: mockUsersRepository,
         },
       ],
+      imports: [StorageModule]
     }).compile();
 
     service = module.get<UsersService>(UsersService);

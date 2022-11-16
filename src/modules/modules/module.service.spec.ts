@@ -1,8 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { randomUUID } from 'crypto';
+import { ContentService } from '../content/content.service';
 import { Content } from '../content/entities/content.entity';
 import { StorageModule } from '../storage/storage.module';
 import { Trail } from '../trails/entities/trail.entity';
+import { TrailsService } from '../trails/trail.service';
 import { CreateModuleDTO } from './dtos/create-module.dto';
 import { Module } from './entities/module.entity';
 import { ModulesService } from './module.service';
@@ -16,6 +18,30 @@ describe('ModulesService', () => {
     findOne: jest.fn().mockImplementation(),
     update: jest.fn().mockImplementation(),
     find: jest.fn().mockImplementation(),
+  };
+
+  const mockTrailsRepository = {
+    findOne: jest.fn().mockImplementation(),
+    save: jest.fn().mockImplementation(),
+    find: jest.fn().mockImplementation(),
+    create: jest.fn().mockImplementation(),
+    preload: jest.fn().mockImplementation(),
+  };
+
+  const mockContentRepository = {
+    findOne: jest.fn().mockImplementation(),
+    save: jest.fn().mockImplementation(),
+    find: jest.fn().mockImplementation(),
+    create: jest.fn().mockImplementation(),
+    preload: jest.fn().mockImplementation(),
+  };
+
+  const mockContentCompletedRepository = {
+    findOne: jest.fn().mockImplementation(),
+    save: jest.fn().mockImplementation(),
+    find: jest.fn().mockImplementation(),
+    create: jest.fn().mockImplementation(),
+    preload: jest.fn().mockImplementation(),
   };
 
   const mockModules: Module[] = [
@@ -45,9 +71,24 @@ describe('ModulesService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ModulesService,
+        TrailsService,
+        ContentService,
+        TrailsService,
         {
           provide: 'MODULE_REPOSITORY',
           useValue: mockModulesRepository,
+        },
+        {
+          provide: 'TRAIL_REPOSITORY',
+          useValue: mockTrailsRepository,
+        },
+        {
+          provide: 'CONTENT_REPOSITORY',
+          useValue: mockContentRepository,
+        },
+        {
+          provide: 'COMPLETED_REPOSITORY',
+          useValue: mockContentCompletedRepository,
         },
       ],
       imports: [StorageModule],
@@ -73,17 +114,26 @@ describe('ModulesService', () => {
       ...newModule,
     });
 
+    const trailId = randomUUID()
+    mockTrailsRepository.findOne.mockReturnValue({
+      id: trailId
+    })
+
     expect(await service.create(newModule)).toEqual({
       id: expect.any(String),
-      icon: expect.any(String),
       order: newModule.order,
       title: newModule.title,
+      description: newModule.description,
+      trail: expect.any(String)
     });
 
     expect(mockModulesRepository.create).toHaveBeenCalledWith({
-      icon_url: expect.any(String),
       order: newModule.order,
       title: newModule.title,
+      description: newModule.description,
+      trail: {
+        id: trailId
+      }
     });
 
     expect(mockModulesRepository.save).toHaveBeenCalled();
@@ -115,9 +165,9 @@ describe('ModulesService', () => {
       }),
     ).toEqual({
       id: expect.any(String),
-      icon: expect.any(String),
       order: createdModule.order,
       title: 'Programming Intermediate',
+      trail: expect.any(String),
     });
 
     expect(mockModulesRepository.update).toHaveBeenCalled();

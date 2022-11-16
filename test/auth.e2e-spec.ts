@@ -24,46 +24,12 @@ describe('AuthController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    repository = app.get<Repository<User>>('USER_REPOSITORY');
-    repository.clear();
     await app.init();
   });
 
   afterAll(async () => {
-    repository = app.get<Repository<User>>('USER_REPOSITORY');
-    repository.clear();
   });
 
-  it('/api/login (POST)', async () => {
-    await request(app.getHttpServer())
-      .post('/users')
-      .send(defaultUser)
-      .expect(201)
-      .then((response) => {
-        expect(response.body).toEqual(
-          expect.objectContaining({
-            id: expect.any(String),
-            ...defaultUser,
-            password: expect.any(String),
-            created_at: expect.any(String),
-            updated_at: expect.any(String),
-          }),
-        );
-      });
-
-    return request(app.getHttpServer())
-      .post('/login')
-      .send({
-        email: defaultUser.email,
-        password: defaultUser.password,
-      })
-      .expect(200)
-      .then((response) => {
-        expect(response.body).toEqual(
-          expect.objectContaining({
-            access_token: expect.any(String),
-          }),
-        );
-      });
+  it('', async () => {
   });
 });

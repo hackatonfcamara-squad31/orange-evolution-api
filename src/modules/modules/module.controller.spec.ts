@@ -44,13 +44,16 @@ describe('ModulesController', () => {
     const module = await controller.create({
       title: 'Programming Basics',
       order: 1,
+      trail: randomUUID(),
+      description: 'Description'
     });
 
     expect(module).toEqual({
       id: expect.any(String),
       title: 'Programming Basics',
       order: 1,
-      icon: '',
+      description: 'Description',
+      trail: expect.any(String)
     });
 
     expect(mockModulesService.create).toHaveBeenCalled();
@@ -60,6 +63,8 @@ describe('ModulesController', () => {
     await controller.create({
       title: 'Programming Basics',
       order: 1,
+      trail: randomUUID(),
+      description: 'Description'
     });
 
     mockModulesService.create.mockReturnValue({
@@ -70,8 +75,10 @@ describe('ModulesController', () => {
     });
 
     const module = await controller.create({
-      title: 'Programming Intermediate',
+      title: 'Programming Basics',
       order: 1,
+      trail: randomUUID(),
+      description: 'Description'
     });
 
     expect(module).toEqual({
@@ -86,8 +93,10 @@ describe('ModulesController', () => {
 
   it('should update an existing module', async () => {
     const module = await controller.create({
-      title: 'Programming Bacs',
+      title: 'Programming Basics',
       order: 1,
+      trail: randomUUID(),
+      description: 'Description'
     });
 
     const updatedModule = await controller.update(module.id, {
@@ -106,6 +115,8 @@ describe('ModulesController', () => {
     const module = await controller.create({
       title: 'Programming Basics',
       order: 1,
+      trail: randomUUID(),
+      description: 'Description'
     });
 
     await controller.delete(module.id);
@@ -117,14 +128,18 @@ describe('ModulesController', () => {
     await controller.create({
       title: 'Programming Basics',
       order: 1,
+      trail: randomUUID(),
+      description: 'Description'
     });
 
     const module = await controller.create({
-      title: 'Programming Intermediate',
-      order: 2,
+      title: 'Programming Basics',
+      order: 1,
+      trail: randomUUID(),
+      description: 'Description'
     });
 
-    await controller.reorder({ id: module.id, order: 1 });
+    await controller.reorder({ id: module.id, order: 1, trail_id: randomUUID() });
 
     expect(mockModulesService.reorder).toHaveBeenCalled();
   });
