@@ -25,7 +25,7 @@ O Orange Evolution consiste em trilhas totalmente gratuitas para que você possa
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/RenataDellamatriz">
+      <a href="https://www.linkedin.com/in/letcia-peixoto/">
         <img src="https://cdn.discordapp.com/avatars/760685982952456232/19de1a3b03141fc4874ac14996ae886d.webp?size=256" width="100px;" alt="Renata Dellamatriz"/>
         <br>
         <sub>
